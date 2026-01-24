@@ -26,7 +26,7 @@
         font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
         
         /* Paramètres A4 Harmonisé (Conservés) */
-        font-size: 11pt; 
+        font-size: 10pt; 
         line-height: 1.5;
         color: #333;
         background-color: #555; /* Fond gris pour l'écran */
@@ -35,9 +35,14 @@
     }
 
     /* Police Abadi pour les montants (Prix et Total) */
-    .tariff-price, .total-honor strong {
+		.tariff-price, .total-honor strong, #total-honoraires {
         font-family: 'Abadi', 'Arial Black', sans-serif;
         letter-spacing: 0.5px;
+    }
+
+    /* Alignement à droite pour le tableau d'ajustements */
+    .table-ajustements td:nth-child(n+3) {
+        text-align: right;
     }
 
         /* EN-TÊTE PRINT - HIDDEN en navigateur */
@@ -60,7 +65,7 @@
         }
 
         .header-company-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: #1a4d2e;
             margin-bottom: 5px;
@@ -295,7 +300,7 @@
         .page-footer {
             display: none;
             text-align: center;
-            font-size: 10px;
+            font-size: 11px;
             color: #333;
             line-height: 1.1;
         }
@@ -329,7 +334,7 @@
 @media print {
             @page {
                 size: A4;
-                margin: 20mm 20mm 20mm 20mm;
+                margin: 15mm 15mm 15mm 15mm;
             }
 
             html, body {
@@ -342,7 +347,7 @@
             body {
                 background-color: white !important;
                 color: #333;
-                font-family: 'Calibri', 'Arial', sans-serif;
+                font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
                 line-height: 1.6;
             }
 
@@ -372,19 +377,19 @@
             }
 
             .header-company-name {
-                font-size: 14px;
+                font-size: 16px; /* Augmenté de 2pts (14->16) */
                 font-weight: bold;
                 color: #1a4d2e;
                 margin-bottom: 3px;
             }
 
             .header-profession {
-                font-size: 11px;
+                font-size: 13px; /* Augmenté proportionnellement */
                 color: #1a4d2e;
             }
 
             .header-right img {
-                height: 40px;
+                height: 48px; /* Augmenté proportionnellement */
                 object-fit: contain;
             }
 
@@ -455,6 +460,30 @@
                 margin-bottom: 1em;
             }
 
+			h2, h3, table, .tariff-row, .signature-section {
+			page-break-inside: avoid;
+			}
+
+			p, li, .condition-article {
+			page-break-inside: auto;
+			orphans: 2; 
+			widows: 2;
+            }
+
+/* 3. Réduire la police UNIQUEMENT pour les 3 chapitres de fin */
+    /* (Assurez-vous d'avoir mis class="conditions-section" aux 3 divs dans le HTML) */
+    .conditions-section, 
+    .conditions-section p, 
+    .conditions-section li, 
+    .conditions-section table {
+        font-size: 9pt !important; /* Réduction à 9pt */
+        line-height: 1.3; /* Tasse un peu les lignes */
+    }
+    
+    .conditions-section h2 {
+        font-size: 11pt; /* Titres un peu plus petits aussi */
+    }
+	
             section, .section {
                 page-break-inside: avoid;
                 margin-bottom: 1.5em;
@@ -488,7 +517,7 @@
 
             .footer-line {
                 margin: 1px 0;
-                font-size: 8px;
+                font-size: 13px;
             }
 
             .page-break {
@@ -509,7 +538,7 @@
         @media print {
             @page {
                 size: A4;
-                margin: 20mm 20mm 20mm 20mm;
+                margin: 15mm 15mm 15mm 15mm;
             }
 
             html, body {
@@ -522,7 +551,7 @@
             body {
                 background-color: white !important;
                 color: #333;
-                font-family: 'Calibri', 'Arial', sans-serif;
+                font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
                 line-height: 1.6;
             }
 
@@ -552,19 +581,19 @@
             }
 
             .header-company-name {
-                font-size: 14px;
+                font-size: 16px; /* Augmenté de 2pts */
                 font-weight: bold;
                 color: #1a4d2e;
                 margin-bottom: 3px;
             }
 
             .header-profession {
-                font-size: 11px;
+                font-size: 13px; /* Augmenté */
                 color: #1a4d2e;
             }
 
             .header-right img {
-                height: 40px;
+                height: 48px; /* Augmenté */
                 object-fit: contain;
             }
 
@@ -668,7 +697,7 @@
 
             .footer-line {
                 margin: 1px 0;
-                font-size: 8px;
+                font-size: 13px;
             }
 
             .page-break {
@@ -822,7 +851,6 @@
     </div>
 
 
-    <!-- EN-TÊTE (Impression uniquement) -->
     <div class="page-header">
         <div class="header-left">
             <div class="header-company-name">Lucie DESBLANCS & Florent DESBLANCS</div>
@@ -834,7 +862,6 @@
     </div>
 
     <div class="container">
-        <!-- HEADER DOCUMENT -->
         <header>
             <div style="text-align: right;">
                 <div class="header-date">Plan de Cuques, le <strong>{{DATE_LETTRE}}</strong></div>
@@ -844,14 +871,11 @@
         </header>
 
 
-    <!-- INTRODUCTION -->
-
-        <div class="intro-text">
+    <div class="intro-text">
             <p>Suite à nos récents échanges, nous vous prions de trouver ci-dessous comme convenu notre proposition de lettre de mission relative à la mission de présentation des comptes à partir des comptes de l'exercice {{ANNEE_EXERCICE}}.</p>
             <p>Notre mission prendra effet à compter de la signature de la présente et de son retour au cabinet.</p>
         </div>
 
-        <!-- DESCRIPTION SECTION -->
         <h2>1. Description de l'Entreprise</h2>
         <div class="description-item">
             <div class="description-label">Dénomination :</div>
@@ -886,15 +910,12 @@
             <strong>Note :</strong> Les honoraires sont fonction du temps passé, du nombre d'écritures, du volume d'opérations et de la qualité des informations communiquées.
         </div>
 
-        <!-- PRESENTATION DU CABINET -->
-        <h2>2. Présentation du Cabinet</h2>
+        <h2 style="page-break-before: always;">2. Présentation du Cabinet</h2>
         <p>Le cabinet Cogex est composé de deux experts-comptables, Florent Desblancs et Lucie Desblancs.</p>
         <p>Nous cumulons à nous deux plus de quarante ans d'expérience. Issus de deux générations différentes, nos profils sont complémentaires. Cela nous permet de nous asseoir sur des bases techniques solides, tout en restant en éveil dans des domaines très changeants tels que la fiscalité, le social ou les solutions informatiques basées sur les progrès technologiques. En conséquence, nous sommes force de proposition pour chacun de nos clients et jouons à plein notre rôle de conseil à leur côté, que ce soit dans l'accompagnement à la prise de décision ou l'aide à la mise en place d'outils.</p>
         <p>Notre fonctionnement offre à chacun de nos clients l'assurance d'être nécessairement suivi et conseillé au quotidien par un expert-comptable, puisque nous traitons tous nos clients en direct. En effet, il nous tient à cœur d'être leurs uniques interlocuteurs, afin d'être le plus réactif et disponible possible.</p>
 
-        <!-- CONDITIONS DE SUCCES -->
-        
-<h2>3. Conditions de Succès</h2>
+        <h2>3. Conditions de Succès</h2>
         <p>Cette mission sera effectuée selon les dispositions de la norme professionnelle du Conseil National de l'Ordre des Experts-comptables relative à la mission d'information sur la base de procédures convenues applicable à compter du 1<sup>er</sup> janvier 2025 (NP 4400) et sera conforme aux dispositions du Code de déontologie de la profession applicables à compter du 30 mars 2012 (décret 2012-432).</p>
         <p>Cette mission comporte de notre part des obligations de moyens et de diligences, et nécessite de votre part la fourniture d'informations et la coopération nécessaire au bon déroulement de nos travaux.</p>
         <p>La mission de présentation vise à permettre au membre de l'ordre d'attester, sauf difficulté particulière, qu'il n'a rien relevé qui remette en cause la régularité, en la forme, de la comptabilité, ainsi que la cohérence et la vraisemblance des comptes annuels, élaborés à partir des documents et des informations fournis par l'entreprise.</p>
@@ -902,11 +923,8 @@
         <p>Cette mission n'est ni un Audit ni un Examen de comptes annuels, et n'a pas pour objectif la recherche systématique de fraudes ou de détournements.</p>
         <p>Il est bien entendu que la mission pourra, sur votre demande, être complétée par d'autres interventions en matière fiscale, sociale, juridique, économique, informatique, financière ou de gestion d'entreprise ou de patrimoine.</p>
 
-        <!-- DEFINITION DE NOTRE MISSION -->
-        
-<h2>4. Définition de Notre Mission</h2>
+        <h2 style="page-break-before: always;">4. Définition de Notre Mission</h2>
 
-        <!-- Mission Comptable -->
         <div class="mission-section">
             <div class="mission-title">Mission Comptable de Base</div>
             <table class="page-break-avoid honoraires">
@@ -935,7 +953,6 @@
             </table>
         </div>
 
-        <!-- Mission Juridique -->
         <div class="mission-section">
             <div class="mission-title">Mission Juridique</div>
             <table class="page-break-avoid honoraires">
@@ -970,7 +987,6 @@
             </table>
         </div>
 
-        <!-- Mission Révision -->
         <div class="mission-section">
             <div class="mission-title">Mission Révision</div>
             <table class="page-break-avoid honoraires">
@@ -1017,7 +1033,6 @@
             </table>
         </div>
 
-        <!-- Mission Déclarations Professionnelles -->
         <div class="mission-section">
             <div class="mission-title">Mission Déclarations Professionnelles</div>
             <table class="page-break-avoid honoraires">
@@ -1082,7 +1097,6 @@
             </table>
         </div>
 
-        <!-- Mission Sociale -->
         <div class="mission-section">
             <div class="mission-title">Mission Sociale</div>
             <table class="page-break-avoid honoraires">
@@ -1183,7 +1197,6 @@
             </table>
         </div>
 
-        <!-- Mission Administrative -->
         <div class="mission-section">
             <div class="mission-title">Mission Administrative</div>
             <table class="page-break-avoid honoraires">
@@ -1248,7 +1261,6 @@
             </table>
         </div>
 
-        <!-- PROPOSITION D'HONORAIRES -->
         <h2>5. Proposition d'Honoraires</h2>
         
 <h3 style="margin: 20px 40px; color: #1a4d2e;"><span style="font-weight: 600;">Gamme {{FORMULE_SELECTIONNEE}}</span></h3>
@@ -1300,7 +1312,7 @@
        
         <div class="page-break"></div>
 <h3><span style="color: #1a4d2e; font-weight: 600;">Ajustements Honoraires Comptables par Chiffre d'Affaires</span></h3>
-        <table class="page-break-avoid honoraires">
+        <table class="page-break-avoid honoraires table-ajustements">
             <thead>
                 <tr>
                     <th>CA Minimum</th>
@@ -1379,9 +1391,8 @@
 
         <p><strong>Note :</strong> Pour tous les travaux complémentaires qui ne rentrent pas dans les tâches présentées ci-dessus, nous facturerons des honoraires en fonction du temps passé, selon le taux horaire collaborateur de 70€ HT et le taux horaire expert-comptable de 110€ HT.</p>
 
-        <!-- MODALITES DE PAIEMENT -->
         <div class="page-break"></div>
-<h2>6. Modalités de Paiement</h2>
+<h2 style="page-break-before: always;">6. Modalités de Paiement</h2>
         <ul>
             <li>Prélèvement avec accord exprès du client</li>
         </ul>
@@ -1390,11 +1401,9 @@
         <p>Sauf dénonciation expresse de la part du client, dans un délai d'un mois à compter de sa réception, la note d'honoraires provisionnels pour l'exercice suivant constituera la nouvelle base des honoraires pour l'exercice considéré.</p>
         <p>Sauf manquement grave, toute rupture du présent contrat doit être faite par lettre recommandée avec demande d'avis de réception, 3 mois avant la date anniversaire, et rend exigible une pénalité de 3/12<sup>ième</sup> des honoraires prévisionnels annuels de l'exercice commencé.</p>
 
-        <!-- CLOSING -->
         <p style="margin-top: 30px;">Restant à votre entière disposition pour vous fournir toute explication complémentaire, et répondre à vos éventuelles observations,</p>
         <p>Nous vous prions de croire, cher Client, en l'assurance de nos sentiments dévoués.</p>
 
-        <!-- SIGNATURES -->
         <div class="signature-section">
             <div class="signature-block">
                 <p><strong>Bon pour accord</strong></p>
@@ -1408,8 +1417,7 @@
             </div>
         </div>
 
-        <!-- CONDITIONS GENERALES -->
-        <div class="conditions-section">
+        <div class="conditions-section" style="page-break-before: always;">
             <div class="page-break"></div>
 <h2>Conditions Générales pour les Clients Professionnels</h2>
             <p><em>(Communes à l'ensemble des missions)</em></p>
@@ -1520,8 +1528,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             </div>
         </div>
 
-        <!-- CONDITIONS GENERALES - MISSION DE PRESENTATION -->
-        <div class="conditions-section" style="margin-top: 30px;">
+        <div class="conditions-section" style="page-break-before: always;">
             <div class="page-break"></div>
 <h2>Conditions Générales - Spécifiques à la Mission de Présentation</h2>
 
@@ -1559,7 +1566,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
 			
 			</div>
 
-            <div class="condition-article">
+            <div class="condition-article" style="page-break-before: avoid;">
                 <div class="condition-title">4. Protection des Données Personnelles</div>
                 <p>	La mission confiée par le client à compter du dirigeant consiste à une mission de présentation.
 	<p>Le cabinet est qualifié de responsable conjoint de traitement. Le Client et le cabinet s’engagent à collecter et à traiter toute donnée personnelle en conformité avec toute réglementation en vigueur applicable au traitement de ces données, et notamment la loi n°78-17 du 6 janvier 1978 modifiée et le règlement européen sur la protection des données personnelles.<p> 
@@ -1579,8 +1586,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             </div>
         </div>
 
-        <!-- TARIFICATIONS SUPPLEMENTAIRES -->
-        <div style="page-break-before: auto; margin-top: 40px;">
+        <div class="conditions-section" style="page-break-before: always; margin-top: 40px;">
             <div class="page-break"></div>
 <h2>Tarifications des Prestations Supplémentaires</h2>
 
@@ -1948,7 +1954,6 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
         
     </div>
 
-    <!-- PIED DE PAGE (Impression uniquement) -->
     <div class="page-footer">
         <div class="footer-content">
             <div class="footer-left">
