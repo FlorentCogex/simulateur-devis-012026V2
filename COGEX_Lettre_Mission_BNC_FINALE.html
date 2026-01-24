@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lettre de Mission - Cabinet Cogex</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        /* EN-TÊTE PRINT - HIDDEN en navigateur */
+        .page-header {
+            display: none;
+            justify-content: space-between;
+            align-items: flex-start;
+            height: 3cm;
+            border-bottom: 1px solid #1a4d2e;
+            padding: 0 40px;
+            margin-bottom: 2cm;
+            background-color: white;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .header-company-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a4d2e;
+            margin-bottom: 5px;
+        }
+
+        .header-profession {
+            font-size: 12px;
+            color: #1a4d2e;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: flex-start;
+            height: 100%;
+        }
+
+        .header-right img {
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #1a4d2e;
+            padding-bottom: 20px;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-date {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .header-recipient {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        h1 {
+            color: #1a4d2e;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #1a4d2e;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #1a4d2e;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .intro-text {
+            margin-bottom: 30px;
+        }
+
+        .description-item {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .description-label {
+            font-weight: bold;
+            width: 200px;
+            color: #1a4d2e;
+        }
+
+        .description-value {
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: #1a4d2e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e8f4e8;
+        }
+
+        .mission-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 4px solid #1a4d2e;
+            background-color: #fafafa;
+        }
+
+        .mission-title {
+            font-weight: bold;
+            color: #1a4d2e;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .tariff-table {
+            margin: 20px 0;
+        }
+
+        .tariff-row {
+            display: flex;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .tariff-label {
+            flex: 2;
+            padding: 10px;
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .tariff-price {
+            flex: 1;
+            padding: 10px;
+            text-align: right;
+            background-color: #ffffff;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            border-top: 2px solid #ddd;
+            padding-top: 30px;
+            gap: 40px;
+        }
+
+        .signature-block {
+            text-align: left;
+            width: 40%;
+            max-width: 300px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-top: 40px;
+            padding-top: 10px;
+            font-weight: bold;
+        }
+
+        .conditions-section {
+            background-color: #f0f8f0;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 5px;
+        }
+
+        .condition-article {
+            margin-bottom: 20px;
+        }
+
+        .condition-title {
+            font-weight: bold;
+            color: #1a4d2e;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        .note {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fffacd;
+            border-left: 3px solid #daa520;
+        }
+
+        /* PIED DE PAGE PRINT - HIDDEN en navigateur */
+        .page-footer {
+            display: none;
+            text-align: center;
+            font-size: 10px;
+            color: #333;
+            line-height: 1.1;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-left {
+            text-align: center;
+        }
+
+        .footer-line {
+            margin-bottom: 2px;
+        }
+
+        /* IMPRESSION - Afficher en-tête et pied de page */
+        
+/* PAGE BREAKS */
+.page-break {
+    page-break-before: auto;
+}
+.page-break-avoid {
+    page-break-inside: avoid;
+}
+
+@media print {
+            @page {
+                size: A4;
+                margin: 20mm 20mm 20mm 20mm;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100%;
+                height: auto;
+            }
+
+            body {
+                background-color: white !important;
+                color: #333;
+                font-family: 'Calibri', 'Arial', sans-serif;
+                line-height: 1.6;
+            }
+
+            .page-header {
+                display: block !important;
+                width: 100%;
+                border-bottom: 1px solid #1a4d2e;
+                padding: 0 0 0.5cm 0;
+                margin: 0 0 1cm 0;
+                background-color: white;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            .header-left, .header-right {
+                display: inline-block;
+                vertical-align: top;
+            }
+
+            .header-left {
+                width: 70%;
+            }
+
+            .header-right {
+                width: 28%;
+                text-align: right;
+            }
+
+            .header-company-name {
+                font-size: 14px;
+                font-weight: bold;
+                color: #1a4d2e;
+                margin-bottom: 3px;
+            }
+
+            .header-profession {
+                font-size: 11px;
+                color: #1a4d2e;
+            }
+
+            .header-right img {
+                height: 40px;
+                object-fit: contain;
+            }
+
+            .container {
+                max-width: 100%;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100%;
+            }
+
+            .container > * {
+                margin: 0 0 0.8em 0;
+                page-break-inside: avoid;
+            }
+
+            header {
+                margin-bottom: 1.5em;
+                border-bottom: 2px solid #1a4d2e;
+                padding-bottom: 0.5em;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            h1, h2, h3 {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+                color: #1a4d2e;
+            }
+
+            p {
+                margin: 0 0 0.8em 0;
+                orphans: 3;
+                widows: 3;
+            }
+
+            table {
+                page-break-inside: avoid;
+                width: 100%;
+                margin: 1em 0;
+                border-collapse: collapse;
+            }
+
+            table td, table th {
+                padding: 0.5em;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            ul, ol {
+                margin: 0.5em 0 0.5em 2em;
+                page-break-inside: avoid;
+            }
+
+            li {
+                margin-bottom: 0.3em;
+            }
+
+            .description-item {
+                page-break-inside: avoid;
+                margin-bottom: 0.8em;
+            }
+
+            .condition-article {
+                page-break-inside: avoid;
+                margin-bottom: 1em;
+            }
+
+            section, .section {
+                page-break-inside: avoid;
+                margin-bottom: 1.5em;
+            }
+
+            /* Traitement du footer : PAS DE POSITION FIXED */
+            .page-footer {
+                display: block !important;
+                width: 100%;
+                position: static !important;
+                border-top: 1px solid #1a4d2e;
+                padding: 0.5cm 0;
+                margin-top: 2em;
+                background-color: white;
+                text-align: center;
+                font-size: 9px;
+                page-break-inside: avoid;
+                page-break-before: auto;
+            }
+
+            .footer-content {
+                margin: 0;
+                padding: 0;
+            }
+
+            .footer-left, .footer-center, .footer-right {
+                font-size: 8px;
+                line-height: 1.2;
+                margin: 2px 0;
+            }
+
+            .footer-line {
+                margin: 1px 0;
+                font-size: 8px;
+            }
+
+            .page-break {
+                page-break-before: auto;
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Éviter les orphelines et veuves */
+            p, li {
+                orphans: 2;
+                widows: 2;
+            }
+        }
+    
+        /* CORRECTIONS - Pied de page et protection tableaux */
+        @media print {
+            @page {
+                size: A4;
+                margin: 20mm 20mm 20mm 20mm;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100%;
+                height: auto;
+            }
+
+            body {
+                background-color: white !important;
+                color: #333;
+                font-family: 'Calibri', 'Arial', sans-serif;
+                line-height: 1.6;
+            }
+
+            .page-header {
+                display: block !important;
+                width: 100%;
+                border-bottom: 1px solid #1a4d2e;
+                padding: 0 0 0.5cm 0;
+                margin: 0 0 1cm 0;
+                background-color: white;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            .header-left, .header-right {
+                display: inline-block;
+                vertical-align: top;
+            }
+
+            .header-left {
+                width: 70%;
+            }
+
+            .header-right {
+                width: 28%;
+                text-align: right;
+            }
+
+            .header-company-name {
+                font-size: 14px;
+                font-weight: bold;
+                color: #1a4d2e;
+                margin-bottom: 3px;
+            }
+
+            .header-profession {
+                font-size: 11px;
+                color: #1a4d2e;
+            }
+
+            .header-right img {
+                height: 40px;
+                object-fit: contain;
+            }
+
+            .container {
+                max-width: 100%;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100%;
+            }
+
+            .container > * {
+                margin: 0 0 0.8em 0;
+                page-break-inside: avoid;
+            }
+
+            header {
+                margin-bottom: 1.5em;
+                border-bottom: 2px solid #1a4d2e;
+                padding-bottom: 0.5em;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            h1, h2, h3 {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+                color: #1a4d2e;
+            }
+
+            p {
+                margin: 0 0 0.8em 0;
+                orphans: 3;
+                widows: 3;
+            }
+
+            table {
+                page-break-inside: avoid;
+                width: 100%;
+                margin: 1em 0;
+                border-collapse: collapse;
+            }
+
+            table td, table th {
+                padding: 0.5em;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            ul, ol {
+                margin: 0.5em 0 0.5em 2em;
+                page-break-inside: avoid;
+            }
+
+            li {
+                margin-bottom: 0.3em;
+            }
+
+            .description-item {
+                page-break-inside: avoid;
+                margin-bottom: 0.8em;
+            }
+
+            .condition-article {
+                page-break-inside: avoid;
+                margin-bottom: 1em;
+            }
+
+            section, .section {
+                page-break-inside: avoid;
+                margin-bottom: 1.5em;
+            }
+
+            /* Traitement du footer : PAS DE POSITION FIXED */
+            .page-footer {
+                display: block !important;
+                width: 100%;
+                position: static !important;
+                border-top: 1px solid #1a4d2e;
+                padding: 0.5cm 0;
+                margin-top: 2em;
+                background-color: white;
+                text-align: center;
+                font-size: 9px;
+                page-break-inside: avoid;
+                page-break-before: auto;
+            }
+
+            .footer-content {
+                margin: 0;
+                padding: 0;
+            }
+
+            .footer-left, .footer-center, .footer-right {
+                font-size: 8px;
+                line-height: 1.2;
+                margin: 2px 0;
+            }
+
+            .footer-line {
+                margin: 1px 0;
+                font-size: 8px;
+            }
+
+            .page-break {
+                page-break-before: auto;
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Éviter les orphelines et veuves */
+            p, li {
+                orphans: 2;
+                widows: 2;
+            }
+        }
+
+        /* Protection des tableaux */
+        table {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .condition-block {
+            margin-bottom: 1.5em;
+            page-break-inside: avoid;
+            background-color: #f0f8f0;
+            padding: 12px;
+            border-left: 4px solid #1a4d2e;
+            border-radius: 3px;
+        }
+
+        .condition-title {
+            font-weight: bold;
+            color: #1a4d2e;
+            margin-bottom: 0.8em;
+            margin-top: 0.5em;
+            font-size: 0.95em;
+        }
+
+        .condition-block p {
+            margin-bottom: 0.6em;
+            text-align: justify;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .condition-block ul {
+            margin-left: 30px;
+            margin-bottom: 0.6em;
+            font-size: 0.95em;
+        }
+
+        .condition-block li {
+            margin-bottom: 0.4em;
+            font-size: 0.95em;
+        }
+
+        /* Bouton Imprimer */
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #1a4d2e;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .btn-print:hover {
+            background-color: #2d6b47;
+        }
+
+        @media print {
+            .btn-print {
+                display: none !important;
+            }
+        }
+
+/* --- AJOUT POUR CACHER LES BOUTONS À L'IMPRESSION --- */
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+	
+    </style>
+
+    <script>
+        // Charger les données de tarification du localStorage
+        window.addEventListener('load', function() {
+            // Récupérer les données
+            const formuleSelectionnee = localStorage.getItem('formuleSelectionnee');
+            const honorairesComptables = localStorage.getItem('honorairesComptables');
+            const honorairesSociale = localStorage.getItem('honorairesSociale');
+            const pvAgo = localStorage.getItem('pvAgo');
+            const registresLegaux = localStorage.getItem('registresLegaux');
+            const revenusFonciers = localStorage.getItem('revenusFonciers');
+            const fraisChancellerie = localStorage.getItem('fraisChancellerie');
+            const totalAnnuel = localStorage.getItem('totalAnnuel');
+            const nbSalaries = localStorage.getItem('nbSalaries');
+
+            // Si données existent, les afficher
+            if (formuleSelectionnee) {
+                if (document.getElementById('formule-selectionnee')) {
+                    document.getElementById('formule-selectionnee').textContent = formuleSelectionnee;
+                }
+                if (document.getElementById('honor-comptables') && honorairesComptables) {
+                    document.getElementById('honor-comptables').textContent = honorairesComptables + ' €';
+                }
+                if (document.getElementById('nb-salarie') && nbSalaries) {
+                    document.getElementById('nb-salarie').textContent = nbSalaries;
+                }
+                if (document.getElementById('honor-social') && honorairesSociale) {
+                    document.getElementById('honor-social').textContent = honorairesSociale + ' €';
+                }
+                if (document.getElementById('pv-ago') && pvAgo) {
+                    document.getElementById('pv-ago').textContent = pvAgo + ' €';
+                }
+                if (document.getElementById('registres') && registresLegaux) {
+                    document.getElementById('registres').textContent = registresLegaux + ' €';
+                }
+                if (document.getElementById('revenus-foncier') && revenusFonciers) {
+                    document.getElementById('revenus-foncier').textContent = revenusFonciers + ' €';
+                }
+                if (document.getElementById('taux-chancellerie') && fraisChancellerie) {
+                    document.getElementById('taux-chancellerie').textContent = fraisChancellerie + ' €';
+                }
+                if (document.getElementById('total-honoraires') && totalAnnuel) {
+                    document.getElementById('total-honoraires').textContent = totalAnnuel + ' €';
+                }
+            }
+        });
+    </script>
+</head>
+<body contenteditable="true" spellcheck="false">
+<div contenteditable="false" class="no-print" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; gap:10px;">
+        <button onclick="sauvegarderFichier()" style="background:#fff; color:#1a4d2e; border:2px solid #1a4d2e; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
+            💾 Sauvegarder
+        </button>
+        
+        <button onclick="window.print()" style="background:#1a4d2e; color:white; border:2px solid #1a4d2e; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
+            🖨️ Imprimer / PDF
+        </button>
+    </div>
+
+
+    <!-- EN-TÊTE (Impression uniquement) -->
+    <div class="page-header">
+        <div class="header-left">
+            <div class="header-company-name">Lucie DESBLANCS & Florent DESBLANCS</div>
+            <div class="header-profession">Experts-comptables</div>
+        </div>
+        <div class="header-right">
+            <img src="Logo-COGEX-ok-vectoriseì-950-Ko.jpg" alt="COGEX">
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- HEADER DOCUMENT -->
+        <header>
+            <div style="text-align: right;">
+                <div class="header-date">Plan de Cuques, le <strong>{{DATE_LETTRE}}</strong></div>
+                <div class="header-recipient">À l'attention de : {{DIRIGEANTS_COMPLET}}</div>
+            </div>
+            <h1>Lettre de Mission</h1>
+        </header>
+
+
+    <!-- INTRODUCTION -->
+
+        <div class="intro-text">
+            <p>Suite à nos récents échanges, nous vous prions de trouver ci-dessous comme convenu notre proposition de lettre de mission relative à la mission de présentation des comptes à partir des comptes de l'exercice {{ANNEE_EXERCICE}}.</p>
+            <p>Notre mission prendra effet à compter de la signature de la présente et de son retour au cabinet.</p>
+        </div>
+
+        <!-- DESCRIPTION SECTION -->
+        <h2>1. Description de l'Entreprise</h2>
+        <div class="description-item">
+            <div class="description-label">Dénomination :</div>
+            <div class="description-value">{{NOM_CLIENT}}</div>
+        </div>
+        <div class="description-item">
+            <div class="description-label">Date de création :</div>
+            <div class="description-value">{{DATE_CREATION}}</div>
+        </div>
+        <div class="description-item">
+            <div class="description-label">Adresse :</div>
+            <div class="description-value">{{ADRESSE}}</div>
+        </div>
+        <div class="description-item">
+            <div class="description-label">Principale activité :</div>
+            <div class="description-value">{{ACTIVITE}}</div>
+        </div>
+        <div class="description-item">
+            <div class="description-label">Dirigeants :</div>
+            <div class="description-value">{{DIRIGEANTS_COMPLET}}</div>
+        </div>
+
+        <div class="note">
+            <strong>Note :</strong> Les honoraires sont fonction du temps passé, du nombre d'écritures, du volume d'opérations et de la qualité des informations communiquées.
+        </div>
+
+        <!-- PRESENTATION DU CABINET -->
+        <h2>2. Présentation du Cabinet</h2>
+        <p>Le cabinet Cogex est composé de deux experts-comptables, Florent Desblancs et Lucie Desblancs.</p>
+        <p>Nous cumulons à nous deux plus de quarante ans d'expérience. Issus de deux générations différentes, nos profils sont complémentaires. Cela nous permet de nous asseoir sur des bases techniques solides, tout en restant en éveil dans des domaines très changeants tels que la fiscalité, le social ou les solutions informatiques basées sur les progrès technologiques. En conséquence, nous sommes force de proposition pour chacun de nos clients et jouons à plein notre rôle de conseil à leur côté, que ce soit dans l'accompagnement à la prise de décision ou l'aide à la mise en place d'outils.</p>
+        <p>Notre fonctionnement offre à chacun de nos clients l'assurance d'être nécessairement suivi et conseillé au quotidien par un expert-comptable, puisque nous traitons tous nos clients en direct. En effet, il nous tient à cœur d'être leurs uniques interlocuteurs, afin d'être le plus réactif et disponible possible.</p>
+
+        <!-- CONDITIONS DE SUCCES -->
+        
+<h2>3. Conditions de Succès</h2>
+        <p>Cette mission sera effectuée selon les dispositions de la norme professionnelle du Conseil National de l'Ordre des Experts-comptables relative à la mission d'information sur la base de procédures convenues applicable à compter du 1<sup>er</sup> janvier 2025 (NP 4400) et sera conforme aux dispositions du Code de déontologie de la profession applicables à compter du 30 mars 2012 (décret 2012-432).</p>
+        <p>Cette mission comporte de notre part des obligations de moyens et de diligences, et nécessite de votre part la fourniture d'informations et la coopération nécessaire au bon déroulement de nos travaux.</p>
+        <p>La mission de présentation vise à permettre au membre de l'ordre d'attester, sauf difficulté particulière, qu'il n'a rien relevé qui remette en cause la régularité, en la forme, de la comptabilité, ainsi que la cohérence et la vraisemblance des comptes annuels, élaborés à partir des documents et des informations fournis par l'entreprise.</p>
+        <p>Elle conduit à l'établissement d'une attestation qui fait partie intégrante des documents de synthèse remis au client.</p>
+        <p>Cette mission n'est ni un Audit ni un Examen de comptes annuels, et n'a pas pour objectif la recherche systématique de fraudes ou de détournements.</p>
+        <p>Il est bien entendu que la mission pourra, sur votre demande, être complétée par d'autres interventions en matière fiscale, sociale, juridique, économique, informatique, financière ou de gestion d'entreprise ou de patrimoine.</p>
+
+        <!-- DEFINITION DE NOTRE MISSION -->
+        
+<h2>4. Définition de Notre Mission</h2>
+
+        <!-- Mission Comptable -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Comptable de Base</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tri & Classement des pièces comptables</td>
+                        <td>Exécute</td>
+                        <td>Néant</td>
+                        <td>Envoi des pièces sous forme numérisée sur le support proposé par le cabinet</td>
+                    </tr>
+                    <tr>
+                        <td>Saisie des journaux</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Récupération des écritures bancaires sur le site Jedéclare.com</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mission Juridique -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Juridique</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dépôt des comptes au Greffe</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Secrétariat juridique</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Tenue registres dématérialisés</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Registre des PV AG et Registre mouvement de titres</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mission Révision -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Révision</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Révision dossier par le collaborateur</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Révision dossier par l'Expert-Comptable</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Elaboration de la plaquette</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Création & Mise à jour DA/DP</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Entretien avec le client</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mission Déclarations Professionnelles -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Déclarations Professionnelles</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Déclaration TVA mensuelle/trimestrielle</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Attention : Seuls les éléments transmis avant le 15 du mois suivant seront pris en compte dans la déclaration</td>
+                    </tr>
+                    <tr>
+                        <td>Déclaration CA 12</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Demande Remboursement TVA</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Liasse fiscale</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>CET</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Déclaration CFE</td>
+                    </tr>
+                    <tr>
+                        <td>Paramétrage jedeclare.com</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>DAS2</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Paramétrage et gestion URSSAF.FR</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>Facturation au temps passé</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mission Sociale -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Sociale</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bulletins paie</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Établissement des bulletins de paie</td>
+                    </tr>
+                    <tr>
+                        <td>Déclarations sociales mensuelles</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Déclarations sociales annuelles</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Établissement de la DADS-U</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Contrat de travail</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Voir tarification ci-dessous</td>
+                    </tr>
+                    <tr>
+                        <td>Avenant au contrat de travail</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Formalités "Entrée du Salarié"</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Formalités "Sortie du Salarié"</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Licenciement</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>Attestations diverses (Maladie, AT, Maternité, Paternité)</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Voir tarification ci-dessous</td>
+                    </tr>
+                    <tr>
+                        <td>Courriers de remise gracieuse</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Voir tarification ci-dessous</td>
+                    </tr>
+                    <tr>
+                        <td>Courriers pour délais de paiement</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Voir tarification ci-dessous</td>
+                    </tr>
+                    <tr>
+                        <td>Conseil en social</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>Divers Social</td>
+                        <td>Néant</td>
+                        <td>Exécute</td>
+                        <td>Sur devis</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mission Administrative -->
+        <div class="mission-section">
+            <div class="mission-title">Mission Administrative</div>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Tâches</th>
+                        <th>Client</th>
+                        <th>Cabinet</th>
+                        <th>Observations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gestion administrative</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>250€ demi-journée / 450€ journée</td>
+                    </tr>
+                    <tr>
+                        <td>Réédition d'un document déjà fourni</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>Tarif 30€ HT/document</td>
+                    </tr>
+                    <tr>
+                        <td>Demande attestation de régularité sociale ou fiscale</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>Tarif 50€ HT/document</td>
+                    </tr>
+                    <tr>
+                        <td>Enquête Pôle Emploi</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>110€ HT/heure</td>
+                    </tr>
+                    <tr>
+                        <td>Remplir un dossier ou document</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>70€ HT/heure</td>
+                    </tr>
+                    <tr>
+                        <td>Demande de remise gracieuse suite à pénalités</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>30€ HT</td>
+                    </tr>
+                    <tr>
+                        <td>Demandes urgentes</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>Cf. lettre de mission + 20%</td>
+                    </tr>
+                    <tr>
+                        <td>Demande attestations diverses (CA, rémunération, etc.)</td>
+                        <td>Néant</td>
+                        <td>Néant</td>
+                        <td>70€ HT/attestation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PROPOSITION D'HONORAIRES -->
+        <h2>5. Proposition d'Honoraires</h2>
+        
+<h3 style="margin: 20px 40px; color: #1a4d2e;"><span style="font-weight: 600;">Gamme {{FORMULE_SELECTIONNEE}}</span></h3>
+
+<div class="tariff-table" style="margin: 20px 0; padding: 0 40px;">
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">Honoraires comptables</div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{HONORAIRES_COMPTABLES}}</div>
+    </div>
+    
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">Nombre de salariés prévu -  <span id="nb-salarie" style="font-weight:bold;">({{NB_SALARIE}})</span></div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{HONORAIRES_SOCIALE}}</div>
+    </div>
+
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">IRPP</div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{IRPP}}</div>
+    </div>
+
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">Revenus fonciers</div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{REVENUS_FONCIERS}}</div>
+    </div>
+
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">Mission Informatique <br><span style="font-size:0.8em; font-weight:normal; font-style:italic;">{{INFORMATIQUE_COMMENT}}</span></div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{INFORMATIQUE_MT}}</div>
+    </div>
+
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">Frais de chancellerie</div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{FRAIS_CHANCELLERIE}}</div>
+    </div>
+
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 15px 0; margin-top: 15px; background-color: #f0f8f0; border: 1px solid #1a4d2e;">
+        <div class="tariff-label" style="flex: 1; padding-left: 10px; font-weight: bold; color: #1a4d2e; text-transform: uppercase;">TOTAL HONORAIRES ANNUELS HT</div>
+        <div class="tariff-price" style="flex: 0 0 150px; padding-right: 10px; text-align: right; font-weight: bold; font-size: 1.2em; color: #1a4d2e;">{{TOTAL_ANNUEL}}</div>
+    </div>
+</div>
+        <div class="page-break"></div>
+<h3><span style="color: #1a4d2e; font-weight: 600;">Ajustements Honoraires Comptables par Chiffre d'Affaires</span></h3>
+        <table class="page-break-avoid honoraires">
+            <thead>
+                <tr>
+                    <th>CA Minimum</th>
+                    <th>CA Maximum</th>
+                    <th>Essentiel</th>
+                    <th>Pilotage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0 €</td>
+                    <td>50 000 €</td>
+                    <td>70 €</td>
+                    <td>95 €</td>
+                </tr>
+                <tr>
+                    <td>50 000 €</td>
+                    <td>150 000 €</td>
+                    <td>95 €</td>
+                    <td>135 €</td>
+                </tr>
+                <tr>
+                    <td>150 000 €</td>
+                    <td>300 000 €</td>
+                    <td>125 €</td>
+                    <td>165 €</td>
+                </tr>
+                <tr>
+                    <td>300 000 €</td>
+                    <td>800 000 €</td>
+                    <td>155 €</td>
+                    <td>195 €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p><strong>Note :</strong> Pour tous les travaux complémentaires qui ne rentrent pas dans les tâches présentées ci-dessus, nous facturerons des honoraires en fonction du temps passé, selon le taux horaire collaborateur de 70€ HT et le taux horaire expert-comptable de 150€ HT.</p>
+
+        <!-- MODALITES DE PAIEMENT -->
+        <div class="page-break"></div>
+<h2>6. Modalités de Paiement</h2>
+        <ul>
+            <li>Prélèvement avec accord exprès du client</li>
+        </ul>
+
+        <p>Notre mission prendra effet à compter de votre acceptation. Elle portera sur les comptes de l'exercice commençant le {{DATE_DEBUT}} au {{DATE_FIN}}.</p>
+        <p>Sauf dénonciation expresse de la part du client, dans un délai d'un mois à compter de sa réception, la note d'honoraires provisionnels pour l'exercice suivant constituera la nouvelle base des honoraires pour l'exercice considéré.</p>
+        <p>Sauf manquement grave, toute rupture du présent contrat doit être faite par lettre recommandée avec demande d'avis de réception, 3 mois avant la date anniversaire, et rend exigible une pénalité de 3/12<sup>ième</sup> des honoraires prévisionnels annuels de l'exercice commencé.</p>
+
+        <!-- CLOSING -->
+        <p style="margin-top: 30px;">Restant à votre entière disposition pour vous fournir toute explication complémentaire, et répondre à vos éventuelles observations,</p>
+        <p>Nous vous prions de croire, cher Client, en l'assurance de nos sentiments dévoués.</p>
+
+        <!-- SIGNATURES -->
+        <div class="signature-section">
+            <div class="signature-block">
+                <p><strong>Bon pour accord</strong></p>
+                <p><strong>Le Client :</strong></p>
+                <div class="signature-line">{{DIRIGEANTS_COMPLET}}</div>
+            </div>
+            <div class="signature-block">
+                <p><strong>Bon pour accord</strong></p>
+                <p><strong>L'Expert-comptable :</strong></p>
+                <div class="signature-line">Florent DESBLANCS</div>
+            </div>
+        </div>
+
+        <!-- CONDITIONS GENERALES -->
+        <div class="conditions-section">
+            <div class="page-break"></div>
+<h2>Conditions Générales pour les Clients Professionnels</h2>
+            <p><em>(Communes à l'ensemble des missions)</em></p>
+
+            <div class="condition-article">
+                <div class="condition-title">1. Domaine d'Application</div>
+                <p>Les présentes conditions sont applicables aux conventions portant sur les missions conclues entre le cabinet Cogex dénommé l'expert-comptable et son client.</p>
+                <p>Le client reconnaît qu'il contracte en qualité de professionnel, telle que définie par le Code de la consommation au jour de la signature des présentes conditions, et que la lettre de mission annexée constitue un contrat de prestations de services en rapport avec ses activités professionnelles.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">2. Définition de la Mission</div>
+                <p>Les travaux incombant à l'expert-comptable sont détaillés dans la lettre de mission et ses annexes (le cas échéant) et sont strictement limités à son contenu.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">3. Obligations du Membre de l'Ordre</div>
+                <p>L'expert-comptable effectue la mission qui lui est confiée conformément aux dispositions du Code de déontologie intégré au décret du 30 mars 2012 relatif à l'exercice de l'activité d'expertise comptable, de la norme professionnelle de « Maîtrise de la qualité », et des normes spécifiques applicables. Il contracte une obligation de moyens.</p>
+                <p>L'expert-comptable est tenu au secret professionnel dans les conditions prévues à l'article 226-13 du Code pénal et à un devoir de discrétion.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">4. Obligations du Client</div>
+ 		<p> Le client s’interdit tout acte de nature à porter atteinte à l’indépendance de l’expert-comptable ou de ses collaborateurs, notamment en s’abstenant de leur faire toutes offres d’exécuter des missions en leur nom propre ou de devenir salarié du client.<p>
+		<p>Le client s’engage à :<p>                
+		<ul>
+                    <li>Fournir les informations et documents d'identification requis en application du Code monétaire et financier</li>
+                    <li>Mettre à la disposition de l'expert-comptable l'ensemble des documents et informations nécessaires à l'exécution de la mission</li>
+                    <li>Réaliser les travaux lui incombant conformément aux dispositions prévues</li>
+                    <li>Respecter les procédures mises en place et le planning d'intervention</li>
+                    <li>Porter à la connaissance de l'expert-comptable les faits nouveaux ou exceptionnels</li>
+                    <li>Confirmer par écrit que les documents fournis sont exhaustifs</li>
+                    <li>Vérifier que les états et documents produits sont conformes aux demandes</li>
+                </ul>
+            <p>Le client reste responsable de la bonne application de la législation et des règlements en vigueur ; l’expert-comptable ne peut être considéré comme se substituant aux obligations du client du fait de cette mission.<p>
+
+<p>Conformément aux prescriptions légales, le client doit prendre toutes les mesures nécessaires pour conserver les pièces justificatives et, d’une façon générale, l’ensemble des documents produits par l’expert-comptable pendant les délais de conservation requis par la loi ou le règlement.<p>
+
+<p>Dès lors que des traitements sont assurés sur le système informatique du client, ce dernier devra assurer la sauvegarde et l’archivage des données et des traitements informatisés pour en garantir la conservation, l’inviolabilité et la lecture ultérieure.<p>
+
+<p>D’une façon générale, le client doit par ailleurs prendre toutes les mesures nécessaires pour assurer la protection de son système informatique.<p>
+
+			</div>
+
+            <div class="condition-article">
+                <div class="condition-title">5. Honoraires</div>
+				
+                <p>L’expert-comptable reçoit du client des honoraires librement convenus qui sont exclusifs de toute autre rémunération, même indirecte. Il est remboursé de ses frais de déplacement et débours.</p>
+
+                <p>				Des acomptes sur honoraires peuvent être demandés périodiquement.</p>
+                <p>Les conditions de règlement des honoraires sont les suivantes.</p>
+
+                <p>Les honoraires sont payés à leur date d’échéance ; en cas de paiement anticipé, aucun escompte n’est accordé ; en cas de retard de paiement, des pénalités de retard sont exigibles le jour suivant la date de règlement figurant sur la facture ; sauf disposition contraire qui ne peut toutefois fixer un taux d’intérêt de ces pénalités inférieur à trois fois le taux d’intérêt légal, le taux d’intérêt sera égal à celui appliqué par la Banque Centrale Européenne à son opération de refinancement la plus récente majoré de 10 points de pourcentage. Les pénalités de retard sont exigibles sans qu’un rappel soit nécessaire. </p>
+
+                <p>Une indemnité forfaitaire pour frais de recouvrement d’un montant de 40 euros est également exigible de plein droit en cas de retard de paiement . Lorsque les frais de recouvrement exposés sont supérieurs au montant de cette indemnité forfaitaire, une indemnisation complémentaire peut être réclamée sur justification.</p>
+
+                <p>Toute contestation d’une facture devra être faite dès réception, préciser la prestation contestée, et être motivée ; ladite contestation ne pourra justifier le non-paiement des autres prestations non contestées, y compris celles réalisées concomitamment, simultanément, ou lorsque les conditions de recours à la facture périodique sont remplies, incluses dans la même facture.</p>
+
+                <p>Le non-paiement des honoraires à l’échéance prévue pourra entraîner, 30 jours après mise en demeure par lettre recommandée avec accusé de réception restée infructueuse, la suspension des travaux ou la fin de la mission.</p>
+
+                <p>En cas de changement des modalités de facturation, une information préalable sera donnée au client.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">6. Responsabilité Civile Professionnelle</div>
+
+                <p>La responsabilité civile professionnelle de l’expert-comptable ne peut être mise en jeu que sur une période contractuellement définie à un an à compter du jour où le client a connu ou aurait dû connaître les faits lui permettant de la mettre en cause.<p> 
+			<p>Les parties s’engagent à s’informer dans les meilleurs délais de tout évènement de nature ou susceptible d’avoir une incidence sur le respect de leurs obligations dans le cadre des présentes.<p>
+
+			<p>La responsabilité contractuelle de l’expert-comptable à l’égard du client, pour toutes les conséquences dommageables de(s) (la) mission(s) visée(s) dans la lettre de mission, est limitée au montant des honoraires (hors frais) annuels liés aux missions en cause.<p>
+
+			<p>La responsabilité civile professionnelle de l’expert-comptable est couverte par un contrat d’assurance dans les conditions fixées par l’article 138 du décret du 30 mars 2012, souscrit auprès de la compagnie Verspieren.<p>
+
+			<p>La responsabilité de l’expert-comptable ne peut notamment être engagée dans l’hypothèse où le préjudice subi par le client serait une conséquence :<p>
+			<ul>
+			<li>d’une information erronée ou d’une faute ou négligence commise par le client ou par ses salariés,
+			<li>du retard ou de la carence du client à fournir une information nécessaire à l’expert-comptable,
+			<li>des fautes commises par des tiers intervenant chez le client.
+			<ul>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">7. Suspension de la Mission</div>
+                <p>Lorsque la mission est suspendue pour cause de force majeure (empêchement temporaire), les délais de remise des travaux sont prolongés pour une durée égale à celle de la suspension susvisée, à moins que le retard en résultant ne justifie la résolution.
+
+Pendant la période de suspension, toutes les dispositions du contrat demeurent applicables.
+
+En cas de manquement du client à l’une de ses obligations (exemple : défaut de paiement des honoraires à l’échéance prévue), l’expert-comptable aura la faculté de suspendre sa mission après l’envoi d’une mise en demeure sous forme de lettre recommandée restée sans effet, et ne pourra être tenu responsable des conséquences préjudiciables pouvant découler de cette suspension..</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">8. Résiliation de la Mission</div>
+                <p>En cas de résiliation par le client en dehors de la durée de préavis prévue dans la lettre de mission (ou pendant la mission en cas de mission ponctuelle), et sauf faute grave imputable à l’expert-comptable, le client devra verser à ce dernier les honoraires dus pour le travail déjà effectué, majorés d’une indemnité conventionnelle égale à 25% des honoraires annuels convenus pour l’exercice en cours ou de la dernière année d’honoraires en cas de montant incertain.<p> 
+<p>En cas de manquement de l’une des parties à l’une de ses obligations, l’autre partie aura la faculté de mettre fin à la mission après l’envoi d’une mise en demeure sous forme de lettre recommandée restée sans effet.<p>
+<p>L’expert-comptable doit exercer sa mission jusqu’à son terme normal. Toutefois, il peut, en s’efforçant de ne pas porter préjudice à son client, l’interrompre pour des motifs justes et raisonnables, tels que la perte de confiance ou la méconnaissance par le client d’une clause substantielle du contrat.<p>
+<p>Dès la survenance d’un évènement susceptible de le placer dans une situation de conflit d’intérêts ou de porter atteinte à son indépendance, l’expert-comptable a l’obligation de dénoncer le contrat . 
+</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">9. Différends</div>
+                <p>En cas de contestation, l'expert-comptable s'efforce de faire accepter la conciliation ou l'arbitrage du président du conseil régional de l'ordre avant toute action en justice.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">10. Droit Applicable et Attribution de Compétence</div>
+                <p>Ce contrat sera régi et interprété selon le droit français. Les litiges seront soumis aux tribunaux compétents de la ville de Marseille.</p>
+            </div>
+        </div>
+
+        <!-- CONDITIONS GENERALES - MISSION DE PRESENTATION -->
+        <div class="conditions-section" style="margin-top: 30px;">
+            <div class="page-break"></div>
+<h2>Conditions Générales - Spécifiques à la Mission de Présentation</h2>
+
+            <div class="condition-article">
+                <div class="condition-title">1. Domaine d'Application</div>
+                <p>Les présentes conditions s'appliquent aux missions de Présentation des comptes annuels et d'établissement des déclarations fiscales y afférentes. Les missions de Présentation sont régies par les normes générales et spécifiques définies par l'Ordre des Experts comptables.</p>
+            </div>
+
+            <div class="condition-article">
+                <div class="condition-title">2. Définition de la Mission</div>
+                <p>La mission de Présentation vise à permettre au membre de l'Ordre d'attester, sauf difficultés particulières, qu'il n'a rien relevé qui remette en cause la régularité en la forme de la comptabilité ainsi que la cohérence et la vraisemblance des comptes annuels issus en tenant compte des documents et informations fournis par l'entreprise..</p>
+                <p>Cette mission n'est ni un Audit ni un Examen des comptes annuels, ce qui exclut la confirmation d'information auprès des tiers et une vérification physique des espèces et des stocks..
+
+				Elle conduit à l'établissement d'une attestation qui fait partie des documents de synthèse qui sont remis au client.
+
+				Elle n'a pas pour objectif la recherche systématique de fraudes et de détournements.</p>
+                <p>Elle s'appuie sur :</p>
+                <ul>
+                    <li>Une prise de connaissance générale de l'entreprise</li>
+                    <li>Le contrôle de la régularité formelle de la comptabilité</li>
+                    <li>Une saisie des écritures à partir des pièces justificatives</li>
+                    <li>Un examen critique de cohérence et de vraisemblance des comptes annuels</li>
+                </ul>
+            
+			<p>Cette mission ayant un caractère annuel, nos obligations prennent normalement fin avec la remise qui vous sera faite des documents de synthèse de l'exercice. Elle se renouvelle chaque année par tacite reconduction, sauf dénonciation suivant les modalités prévues aux conditions générales.<p>
+			
+			</div>
+
+            <div class="condition-article">
+                <div class="condition-title">3. Durée de la Mission</div>
+                <p>Les missions sont confiées pour une durée d'un an. Elles sont renouvelables chaque année par tacite reconduction, sauf dénonciation par lettre recommandée avec accusé de réception trois mois avant la date de clôture de l'exercice.</p>
+				<p>La préparation et l'établissement des comptes annuels imposant des prestations réciproques tout au long de l'exercice, chacune des parties aura la faculté, en cas de manquement important par l'autre partie à ses obligations, de mettre fin sans délai à la mission.<p>
+				<p>Sauf faute grave du membre de l'Ordre, le client ne peut interrompre la mission en cours qu'après l'en avoir informé par lettre recommandée avec accusé de réception un mois avant la date de la cessation et sous réserve de lui régler les honoraires pour l'exercice en cours.<p>
+				<p>Lorsque la mission est suspendue pour cause de force majeure, les délais de remise des travaux seront prolongés pour une durée égale à celle de la suspension. Pendant la période de suspension, les dispositions des articles 4, 5 et 6 des conditions générales demeurent applicables.<p>
+			
+			</div>
+
+            <div class="condition-article">
+                <div class="condition-title">4. Protection des Données Personnelles</div>
+                <p>	La mission confiée par le client à compter du dirigeant consiste à une mission de présentation.
+	<p>Le cabinet est qualifié de responsable conjoint de traitement. Le Client et le cabinet s’engagent à collecter et à traiter toute donnée personnelle en conformité avec toute réglementation en vigueur applicable au traitement de ces données, et notamment la loi n°78-17 du 6 janvier 1978 modifiée et le règlement européen sur la protection des données personnelles.<p> 
+	<p>Le cabinet est autorisé à traiter pour le compte de son client les données personnelles nécessaires pour fournir le ou les service(s) suivant(s) :<p> 
+	<p>La nature des opérations réalisées sur les données est la fonction déclarations sociales, établissement des bulletins de salaire et mission juridique.<p> 
+	<p>Les données personnelles traitées sont les bulletins de salaires, les modifications et publications juridiques. <p>
+	<p>Les catégories de personnes concernées sont les salariés de l’entreprise et les dirigeants.<p>
+	<p>La ou les finalité(s) partagées totalement ou partiellement entre les responsables conjoints de traitement sont toutes les obligations de nature sociale, fiscale et juridique. 
+	<p>Le client et le cabinet s’engagent à prendre toutes précautions utiles afin de préserver la sécurité des informations et notamment de les protéger contre toute destruction accidentelle ou illicite, perte accidentelle, altération, diffusion ou accès non autorisés. Préciser les mesures de sécurité mise en place par chacun des responsables conjoints pour assurer la protection des données personnelles <p>
+	<p>Le cabinet s’engage à communiquer au Client la survenance de toute faille de sécurité ayant des conséquences directes ou indirectes sur le traitement, ainsi que toute plainte qui lui serait adressée par tout individu concerné par le traitement réalisé au titre du Contrat. Cette communication devra être effectuée dans les plus brefs délais et au maximum quarante-huit heures (délai à adapter pour permettre au client-responsable de traitement de respecter le délai de 72 heures maximum) après la découverte de la faille de sécurité ou suivant réception d’une plainte. Le client se chargera de la notification éventuelle à l’autorité de contrôle et à la personne concernée.<p>
+	<p>Pour l’exécution du service objet du présent contrat, les moyens suivants sont mis en place par le cabinet et le client : préciser les mesures techniques et organisationnelles pour effectuer le ou les traitements, fournir une description des moyens logiciels de traitement utilisés par chacun.<p>
+	<p>Il appartient au client de fournir l’information aux personnes concernées par les opérations de traitement au moment de la collecte des données (il faut déterminer la personne en charge d’informer les personnes concernées sur les droits dont ils disposent et les finalités du traitement, destinataires etc. et qui va effectivement répondre et s’assurer du respect effectif de ses droits – il est recommandé que ce soit le client qui se charge de ces obligations).<p> 
+	<p>Le client devra également répondre aux demandes d’exercice des droits exercés par la personne concernée (le cabinet peut offrir au client une assistance pour la mise en place des procédures de traitement des demandes des personnes concernées).<p>
+	<p>Le cabinet fera appel à des sous-traitants pour réaliser la mission sociale. Les conditions d’intervention de ce sous-sous-traitant sont les suivantes : collecte des données nécessaires à ;’embauche des salariés, l’établissement des bulletins de salaire, les documents relatifs à des évènements familiaux des salariés et de sortie du personnel. Le client est en contact direct avec le sous-traitant et les échanges se font par mail. Le sous-traitant s’est engagé à respecter les obligations mises à sa charge par la règlementation en matière de protection des données personnelles.<p> 
+	<p>Les données sont susceptibles d'être conservées pour une durée de 3 ans et durant toute la durée de l’engagement de notre responsabilité professionnelle.<p> 
+	<p>Le cabinet collecte également des données d’identification dans le cadre de la présente mission pour respecter ses obligations en matière de lutte contre le blanchiment des capitaux et financement du terrorisme. Dans le cadre de ce traitement, le cabinet a la qualité de responsable de traitement et conserve pendant cinq ans, à compter de la fin de la relation d’affaires, les documents et informations relatifs à l'identité des clients, des personnes agissant pour son compte et des bénéficiaires effectifs (article L 561-12 du Code monétaire et financier). Le cabinet conserve pendant cinq ans à compter de leur exécution, des documents et informations relatifs aux opérations faites ainsi que des documents consignant les caractéristiques des opérations mentionnées à l'article L. 561-10-2 du CMF. Ces données peuvent être communiquées aux autorités légales compétentes. »</p>
+            </div>
+        </div>
+
+        <!-- TARIFICATIONS SUPPLEMENTAIRES -->
+        <div style="page-break-before: auto; margin-top: 40px;">
+            <div class="page-break"></div>
+<h2>Tarifications des Prestations Supplémentaires</h2>
+
+            <h3>Prestations Sociales Récurrentes</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mise en place dossier</td>
+                        <td>Offerte</td>
+                    </tr>
+                    <tr>
+                        <td>Mise en place salarié</td>
+                        <td>Offerte</td>
+                    </tr>
+                    <tr>
+                        <td>Bulletins de salaire</td>
+                        <td>31,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DSN mensuelle 1-10 salariés</td>
+                        <td>0,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DSN mensuelle >10 salariés</td>
+                        <td>0,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Contrat sans clause spécifique</td>
+                        <td>110,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Modification contrat de travail</td>
+                        <td>50,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Avenant contrat de travail</td>
+                        <td>50,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DPAE</td>
+                        <td>25,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Lettre d'avertissement</td>
+                        <td>50,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Déclaration accident du travail</td>
+                        <td>25,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Rupture conventionnelle - calcul et bordereau</td>
+                        <td>110,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Gestion intégrale rupture conventionnelle</td>
+                        <td>150,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Conseil, recherches juridiques, consultation droit social</td>
+                        <td>110,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Gestion de la Paie</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Forfait mise en place coffre-fort électronique</td>
+                        <td>150,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Saisie déclaration médecine du travail</td>
+                        <td>15,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Adhésion organisme prévoyance/mutuelle</td>
+                        <td>100,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Affiliation salarié mutuelle</td>
+                        <td>15,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>STC (certificat de travail, attestation Pôle emploi)</td>
+                        <td>50,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Bordereau de charges</td>
+                        <td>50,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Editions mensuelles</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Livres de paie</td>
+                        <td>Inclus</td>
+                    </tr>
+                    <tr>
+                        <td>Etat des cotisations</td>
+                        <td>Inclus</td>
+                    </tr>
+                    <tr>
+                        <td>Journal de contrôle</td>
+                        <td>Inclus</td>
+                    </tr>
+                    <tr>
+                        <td>Allègements Fillon</td>
+                        <td>Inclus</td>
+                    </tr>
+                    <tr>
+                        <td>Accès Silae Entreprise/Expert-comptabble</td>
+                        <td>Inclus</td>
+                    </tr>
+                    <tr>
+                        <td>DSN Evénement (arrêt de travail, maternité)</td>
+                        <td>10,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Déclaration mensuelle Activité partielle</td>
+                        <td>10,00 €</td>
+                    </tr>
+		    <tr>
+                        <td>Dossier Activité partielle</td>
+                        <td>110,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Tarifs BTP</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Adhésion CI BTP</td>
+                        <td>70,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Affiliation salarié CI BTP</td>
+                        <td>20,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Affiliation salarié PRO BTP</td>
+                        <td>20,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DNA (Déclaration nominative annuelle)</td>
+                        <td>15,00 €/salarié/an</td>
+                    </tr>
+                    <tr>
+                        <td>Déclaration arrêts PRO BTP</td>
+                        <td>10,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Demande congés CI BTP</td>
+                        <td>10,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Déclaration intempéries</td>
+                        <td>10,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+	    <h3>Droit Social</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Contrat avec clause spécifique</td>
+                        <td>180,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Licenciement économique</td>
+                        <td>450,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Licenciement pour inaptitude</td>
+                        <td>450,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Licenciement pour motif personnel</td>
+                        <td>450,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Affichages obligatoires</td>
+                        <td>120,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DUERP</td>
+                        <td>600,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Mise en place règlement intérieur</td>
+                        <td>350,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Accord d'entreprise</td>
+                        <td>700,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Mise en place intéressement</td>
+                        <td>700,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>DUE</td>
+                        <td>À partir de 100,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Accompagnement Mise en Place CSE</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Accompagnement - Salariés candidats</td>
+                        <td>1 000,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Accompagnement - Salariés non candidats (PV de carence)</td>
+                        <td>600,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Ressources Humaines</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Guide entretien professionnel + documents préparatoires</td>
+                        <td>110,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Accompagnement à la réalisation des entretiens professionnels</td>
+                        <td>300,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Gestion du plan de formation</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>Formation harcèlement moral et sexuel</td>
+                        <td>450,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Recrutement</td>
+                        <td>8% du salaire brut annuel</td>
+                    </tr>
+                    <tr>
+                        <td>Coaching en management / Audit RH</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>GPEC</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>Aide à l'embauche</td>
+                        <td>Sur devis</td>
+                    </tr>
+                    <tr>
+                        <td>Audit social/paie</td>
+                        <td>Sur devis</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Gestion Administrative</h3>
+            <table class="page-break-avoid honoraires">
+                <thead>
+                    <tr>
+                        <th>Prestation</th>
+                        <th>Tarif</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Assistance administrative - forfait ½ journée</td>
+                        <td>250,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Assistance administrative - forfait journée</td>
+                        <td>450,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Attestation de vigilance ou régularité fiscale</td>
+                        <td>50,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Réédition d'un document déjà fourni</td>
+                        <td>30,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Enquête Pôle Emploi (par heure)</td>
+                        <td>110,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Remplir un dossier ou document (par heure)</td>
+                        <td>70,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Demande de remise gracieuse suite à pénalités</td>
+                        <td>30,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Demandes urgentes</td>
+                        <td>Lettre de mission + 20%</td>
+                    </tr>
+                    <tr>
+                        <td>Demandes attestations diverses (CA, rémunération, etc.)</td>
+                        <td>70,00 €</td>
+                    </tr>
+                    <tr>
+                        <td>Récupération données comptables (FEC) années antérieures</td>
+                        <td>200,00 €</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        
+    </div>
+
+    <!-- PIED DE PAGE (Impression uniquement) -->
+    <div class="page-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-line">Bd Ange Delestrade – Résidence Centre Sud 2 – Bt C</div>
+                <div class="footer-line">13380 Plan de Cuques</div>
+                <div class="footer-line">Siret 434 115 002 00041 APE 6920Z</div>
+                <div class="footer-line">07 70 02 86 66 – lucie.desblancs@cabinet-cogex.fr</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // 1. FONCTION DE SAUVEGARDE (Avec date automatique)
+    function sauvegarderFichier() {
+        const nomClient = localStorage.getItem('nom_client') || 'Client';
+        
+        const dateObj = new Date();
+        const jour = String(dateObj.getDate()).padStart(2, '0');
+        const mois = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const annee = dateObj.getFullYear();
+        const dateDuJour = jour + mois + annee;
+
+        const nomFichierParDefaut = "Lettre_Mission_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour;
+        const nomFichier = prompt("Nom du fichier à sauvegarder :", nomFichierParDefaut);
+        
+        if (nomFichier) {
+            const clone = document.documentElement.cloneNode(true);
+            const boutons = clone.querySelector('.no-print');
+            if(boutons) boutons.remove();
+
+            const htmlContent = "<!DOCTYPE html>" + clone.outerHTML;
+            const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = nomFichier + ".html";
+            link.click();
+        }
+    }
+
+    // 2. UTILITAIRES DE FORMATAGE
+    // Dates : 2026-01-23 -> 23/01/2026
+    function formaterDate(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        return dateStr;
+    }
+
+    // Montants : 1200 -> 1 200,00
+    function formaterMontant(valeur) {
+        if (!valeur) return '0,00';
+        // On nettoie la valeur (enlève les espaces et remplace virgule par point pour le calcul)
+        let nombre = parseFloat(valeur.toString().replace(/\s/g, '').replace(',', '.'));
+        if (isNaN(nombre)) return '0,00';
+        // On reformate proprement en FR avec 2 décimales forcées
+        return nombre.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // 3. CHARGEMENT ET INJECTION DES DONNÉES
+    window.addEventListener('load', function() {
+        console.log('🚀 CHARGEMENT ET FORMATAGE...');
+        setTimeout(function() {
+            let html = document.body.innerHTML;
+            const store = localStorage;
+
+            // --- INFOS GÉNÉRALES ---
+            html = html.replaceAll('{{NOM_CLIENT}}', store.getItem('nom_client') || '');
+            html = html.replaceAll('{{CAPITAL}}', store.getItem('capital') || '');
+            
+            // Dates
+            html = html.replaceAll('{{DATE_CREATION}}', formaterDate(store.getItem('date_creation')));
+            html = html.replaceAll('{{DATE_DEBUT}}', formaterDate(store.getItem('date_debut')));
+            html = html.replaceAll('{{DATE_FIN}}', formaterDate(store.getItem('date_fin')));
+            html = html.replaceAll('{{DATE_LETTRE}}', new Date().toLocaleDateString('fr-FR'));
+            
+            // Autres infos
+            html = html.replaceAll('{{FORME_JURIDIQUE}}', store.getItem('forme_juridique') || '');
+            html = html.replaceAll('{{ADRESSE}}', store.getItem('adresse') || '');
+            html = html.replaceAll('{{ACTIVITE}}', store.getItem('activite') || '');
+            html = html.replaceAll('{{DIRIGEANTS_COMPLET}}', store.getItem('dirigeants') || '');
+            
+            // Année exercice
+            const dateFin = store.getItem('date_fin');
+            const anneeEx = dateFin ? dateFin.split('-')[0] : new Date().getFullYear();
+            html = html.replaceAll('{{ANNEE_EXERCICE}}', anneeEx);
+
+            // --- TARIFS (Avec formatage forcé) ---
+            html = html.replaceAll('{{FORMULE_SELECTIONNEE}}', store.getItem('formuleSelectionnee') || '');
+            html = html.replaceAll('{{NB_SALARIE}}', store.getItem('nbSalaries') || '0');
+
+            // Application de formaterMontant() sur tous les prix
+            html = html.replaceAll('{{HONORAIRES_COMPTABLES}}', formaterMontant(store.getItem('honorairesComptables')) + ' €');
+            html = html.replaceAll('{{HONORAIRES_SOCIALE}}', formaterMontant(store.getItem('honorairesSociale')) + ' €');
+            html = html.replaceAll('{{PV_AGO}}', formaterMontant(store.getItem('pvAgo')) + ' €');
+            html = html.replaceAll('{{REGISTRES_LEGAUX}}', formaterMontant(store.getItem('registresLegaux')) + ' €');
+            html = html.replaceAll('{{FRAIS_CHANCELLERIE}}', formaterMontant(store.getItem('fraisChancellerie')) + ' €');
+            html = html.replaceAll('{{TOTAL_ANNUEL}}', formaterMontant(store.getItem('totalAnnuel')) + ' €');
+
+            // Nouveaux champs
+            html = html.replaceAll('{{IRPP}}', formaterMontant(store.getItem('irpp')) + ' €');
+            html = html.replaceAll('{{REVENUS_FONCIERS}}', formaterMontant(store.getItem('revenusFonciers')) + ' €');
+            html = html.replaceAll('{{INFORMATIQUE_MT}}', formaterMontant(store.getItem('informatiqueAnnuel')) + ' €');
+            html = html.replaceAll('{{INFORMATIQUE_COMMENT}}', store.getItem('informatiqueCommentaire') || '');
+
+            document.body.innerHTML = html;
+        }, 100);
+    });
+</script>
+</body>
+</html>
