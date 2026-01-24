@@ -4,18 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Mission - Cabinet Cogex</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Calibri', 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-        }
+<style>
+    /* 1. DÉFINITION DES POLICES (Comme sur le simulateur) */
+    @font-face {
+        font-family: 'Bahnschrift Light';
+        src: local('Bahnschrift Light'), local('Bahnschrift');
+    }
+    @font-face {
+        font-family: 'Abadi';
+        src: local('Abadi'), local('Abadi MT Condensed Extra Bold');
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        /* Police Bahnschrift pour tout le texte */
+        font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
+        
+        /* Paramètres A4 Harmonisé (Conservés) */
+        font-size: 11pt; 
+        line-height: 1.5;
+        color: #333;
+        background-color: #555; /* Fond gris pour l'écran */
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    /* Police Abadi pour les montants (Prix et Total) */
+    .tariff-price, .total-honor strong {
+        font-family: 'Abadi', 'Arial Black', sans-serif;
+        letter-spacing: 0.5px;
+    }
 
         /* EN-TÊTE PRINT - HIDDEN en navigateur */
         .page-header {
