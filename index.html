@@ -130,11 +130,30 @@
             margin-bottom: 30px;
         }
 
-        h3 { color: var(--accent); margin-bottom: 1.5rem; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        h3 { color: var(--accent); margin-bottom: 1.5rem; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; position: relative; }
+
+        /* DETAIL DES OFFRES */
+        .btn-toggle-info {
+            position: absolute; right: 0; top: 0;
+            font-size: 0.75rem; color: var(--text-muted); cursor: pointer;
+            text-transform: none; border-bottom: none; font-weight: normal;
+        }
+        .btn-toggle-info:hover { color: var(--accent); }
+        .offres-info {
+            margin-bottom: 20px; padding: 15px; border: 1px dashed var(--border);
+            border-radius: 4px; background: rgba(255,255,255,0.03); overflow-x: auto;
+        }
+        .offres-info table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .offres-info th, .offres-info td { padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--border); }
+        .offres-info th:first-child, .offres-info td:first-child { text-align: left; color: var(--text-muted); }
+        .offres-info th { color: var(--accent); text-transform: uppercase; font-size: 0.75rem; }
+        .offres-info td.yes { color: var(--accent); font-weight: bold; }
+        .offres-info td.no { color: var(--text-muted); opacity: 0.4; }
 
         /* FORMULAIRES */
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .form-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
 
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
@@ -266,7 +285,7 @@
                         <input type="text" id="nomDossierSocietes" oninput="updateSummary('Societes')">
                     </div>
 
-                    <div class="form-grid-3">
+                    <div class="form-grid-4">
                         <div class="input-group">
                             <label>CA Annuel (€)</label>
                             <input type="number" id="caClientSocietes" oninput="calculerTarifsSocietes()">
@@ -274,6 +293,10 @@
                         <div class="input-group">
                             <label>Salariés</label>
                             <input type="number" id="nbSalariesSocietes" value="0" oninput="calculerDevisSocietes()">
+                        </div>
+                        <div class="input-group">
+                            <label>Tarif Bulletin Salaire (€)</label>
+                            <input type="number" id="tarifBulletinSocietes" value="31" oninput="calculerDevisSocietes()">
                         </div>
                         <div class="input-group">
                             <label>Secteur</label>
@@ -288,12 +311,36 @@
                 </div>
 
                 <div class="section-block">
-                    <h3>Formule Comptable</h3>
+                    <h3>Formule Comptable<a href="#" class="btn-toggle-info" onclick="toggleOffresInfo('societes'); return false;">ℹ️ Détail des offres</a></h3>
+                    <div id="offres-info-societes" class="offres-info" style="display:none;">
+                        <table>
+                            <thead>
+                                <tr><th>Prestation incluse</th><th>Performance</th><th>Pilotage</th><th>Essentiel</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Établissement des comptes annuels</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Entretien annuel présentation des comptes</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Espace dédié pour dépôt des documents</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Établissement déclarations fiscales courantes</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Prévision charges sociales TNS/fiscales N+1</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Tableau de bord commenté</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Situation comptable intermédiaire</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Bilan social (prévoyance retraite)</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Établissement budget prévisionnel</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+                                <tr><td>Calcul seuil de rentabilité</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+                                <tr><td>Calcul coût de revient</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+                                <tr><td>Accès comptabilité en direct</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+                                <tr><td>Assurance contrôle fiscal</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+                                <tr><td>Délai de prise en compte des demandes</td><td>72h</td><td>72h</td><td class="no">—</td></tr>
+                                <tr><td>Temps d'assistance inclus</td><td>8h</td><td>4h</td><td>1h</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div id="offre-gammee-societes">
                         <div class="pricing-cards">
-                            <div class="price-card" onclick="selectFormuleSocietes('ESSENTIEL')">
-                                <span>ESSENTIEL</span>
-                                <span class="amount" id="price-essentiel-societes">0</span>
+                            <div class="price-card" onclick="selectFormuleSocietes('PERFORMANCE')">
+                                <span>PERFORMANCE</span>
+                                <span class="amount" id="price-performance-societes">0</span>
                                 <span>€ HT / mois</span>
                             </div>
                             <div class="price-card" onclick="selectFormuleSocietes('PILOTAGE')">
@@ -301,9 +348,9 @@
                                 <span class="amount" id="price-pilotage-societes">0</span>
                                 <span>€ HT / mois</span>
                             </div>
-                            <div class="price-card" onclick="selectFormuleSocietes('PERFORMANCE')">
-                                <span>PERFORMANCE</span>
-                                <span class="amount" id="price-performance-societes">0</span>
+                            <div class="price-card" onclick="selectFormuleSocietes('ESSENTIEL')">
+                                <span>ESSENTIEL</span>
+                                <span class="amount" id="price-essentiel-societes">0</span>
                                 <span>€ HT / mois</span>
                             </div>
                         </div>
@@ -340,6 +387,9 @@
                         <div class="input-group"><label>IRPP (€)</label><input type="number" id="irSocietes" value="0" oninput="calculerDevisSocietes()"></div>
                         <div class="input-group"><label>Nb Biens Immo.</label><input type="number" id="nombreBiensSocietes" value="0" oninput="calculerRevenusFonciers('Societes')"></div>
                     </div>
+                    <div class="form-grid-2" style="margin-top: 20px;">
+                        <div class="input-group"><label>Frais de Chancellerie (%)</label><input type="number" id="tauxChancellerieSocietes" value="3" step="0.1" oninput="calculerDevisSocietes()"></div>
+                    </div>
                 </div>
 
                 <div class="section-block">
@@ -373,7 +423,7 @@
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersSocietes">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueSocietes">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
-                    <div class="ticket-row"><span>Chancellerie (3%)</span><span id="fraisChancellerieSocietes">0,00 €</span></div>
+                    <div class="ticket-row"><span>Chancellerie (<span id="tauxChancellerieLabelSocietes">3</span>%)</span><span id="fraisChancellerieSocietes">0,00 €</span></div>
                     
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
@@ -406,24 +456,44 @@
                         <label>Nom du Client</label>
                         <input type="text" id="nomDossierBNC" oninput="updateSummary('BNC')">
                     </div>
-                    <div class="form-grid-2">
+                    <div class="form-grid-3">
                         <div class="input-group"><label>Recettes Annuelles (€)</label><input type="number" id="caClientBNC" oninput="calculerTarifsBNC()"></div>
                         <div class="input-group"><label>Salariés</label><input type="number" id="nbSalariesBNC" value="0" oninput="calculerDevisBNC()"></div>
+                        <div class="input-group"><label>Tarif Bulletin Salaire (€)</label><input type="number" id="tarifBulletinBNC" value="31" oninput="calculerDevisBNC()"></div>
                     </div>
                 </div>
 
                 <div class="section-block">
-                    <h3>Formule BNC</h3>
+                    <h3>Formule BNC<a href="#" class="btn-toggle-info" onclick="toggleOffresInfo('bnc'); return false;">ℹ️ Détail des offres</a></h3>
+                    <div id="offres-info-bnc" class="offres-info" style="display:none;">
+                        <table>
+                            <thead>
+                                <tr><th>Prestation incluse</th><th>Pilotage</th><th>Essentiel</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Établissement des comptes annuels</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Entretien annuel présentation des comptes</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Espace dédié pour dépôt des documents</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Établissement déclarations fiscales courantes</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                                <tr><td>Gestion Urssaf personnelle du dirigeant</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Tableau de bord commenté</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Situation comptable intermédiaire</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Bilan social (prévoyance retraite)</td><td class="yes">✓</td><td class="no">—</td></tr>
+                                <tr><td>Délai de prise en compte des demandes</td><td>72h</td><td class="no">—</td></tr>
+                                <tr><td>Temps d'assistance inclus</td><td>4h</td><td>1h</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div id="offre-gammee-bnc">
                         <div class="pricing-cards" style="grid-template-columns: 1fr 1fr;">
-                            <div class="price-card" onclick="selectFormuleBNC('ESSENTIEL')">
-                                <span>ESSENTIEL</span>
-                                <span class="amount" id="price-essentiel-bnc">0</span>
-                                <span>€ HT / mois</span>
-                            </div>
                             <div class="price-card" onclick="selectFormuleBNC('PILOTAGE')">
                                 <span>PILOTAGE</span>
                                 <span class="amount" id="price-pilotage-bnc">0</span>
+                                <span>€ HT / mois</span>
+                            </div>
+                            <div class="price-card" onclick="selectFormuleBNC('ESSENTIEL')">
+                                <span>ESSENTIEL</span>
+                                <span class="amount" id="price-essentiel-bnc">0</span>
                                 <span>€ HT / mois</span>
                             </div>
                         </div>
@@ -449,6 +519,9 @@
                     <div class="form-grid-2">
                         <div class="input-group"><label>IRPP (€)</label><input type="number" id="irBNC" value="0" oninput="calculerDevisBNC()"></div>
                         <div class="input-group"><label>Nb Biens Immo.</label><input type="number" id="nombreBiensBNC" value="0" oninput="calculerRevenusFonciers('BNC')"></div>
+                    </div>
+                    <div class="form-grid-2" style="margin-top: 20px;">
+                        <div class="input-group"><label>Frais de Chancellerie (%)</label><input type="number" id="tauxChancellerieBNC" value="3" step="0.1" oninput="calculerDevisBNC()"></div>
                     </div>
                 </div>
 
@@ -482,7 +555,7 @@
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersBNC">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueBNC">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
-                    <div class="ticket-row"><span>Chancellerie (3%)</span><span id="fraisChancellerieBNC">0,00 €</span></div>
+                    <div class="ticket-row"><span>Chancellerie (<span id="tauxChancellerieLabelBNC">3</span>%)</span><span id="fraisChancellerieBNC">0,00 €</span></div>
                     
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
@@ -568,6 +641,11 @@
                 if(document.getElementById('dateTicket'+pageId.charAt(0).toUpperCase() + pageId.slice(1)))
                    document.getElementById('dateTicket'+pageId.charAt(0).toUpperCase() + pageId.slice(1)).textContent = d;
             }
+        }
+
+        function toggleOffresInfo(type) {
+            const panel = document.getElementById('offres-info-' + type);
+            panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
         }
 
         function toggleManualMode(type) {
@@ -713,9 +791,9 @@
             selFormSoc = formule; prixBaseSoc = 0;
             document.querySelectorAll('#societes-page .price-card').forEach(c => c.classList.remove('selected'));
             const cards = document.querySelectorAll('#societes-page .price-card');
-            if(formule === 'ESSENTIEL') cards[0].classList.add('selected');
+            if(formule === 'PERFORMANCE') cards[0].classList.add('selected');
             if(formule === 'PILOTAGE') cards[1].classList.add('selected');
-            if(formule === 'PERFORMANCE') cards[2].classList.add('selected');
+            if(formule === 'ESSENTIEL') cards[2].classList.add('selected');
             calculerDevisSocietes();
         }
 
@@ -741,19 +819,21 @@
                 mensuel = Math.round(mensuel * maj);
             }
 
+            const tarifBulletin = parseFloat(document.getElementById('tarifBulletinSocietes').value)||0;
             const cpta = mensuel * 12;
-            const social = nbSal * 31 * 12;
+            const social = nbSal * tarifBulletin * 12;
             const pv = parseFloat(document.getElementById('pvAgoSocietes').value)||0;
             const reg = parseFloat(document.getElementById('registresLegauxSocietes').value)||0;
             const ir = parseFloat(document.getElementById('irSocietes').value)||0;
             const fonc = (parseInt(document.getElementById('nombreBiensSocietes').value)||0) * 150;
-            
+
             // Calcul Informatique
             const infoMensuel = parseFloat(document.getElementById('infoMensuelSocietes').value)||0;
             const infoAnnuel = infoMensuel * 12;
 
+            const tauxChancellerie = parseFloat(document.getElementById('tauxChancellerieSocietes').value)||0;
             const sousTotal = cpta + social + pv + reg + ir + fonc + infoAnnuel;
-            const frais = sousTotal * 0.03;
+            const frais = sousTotal * (tauxChancellerie / 100);
             const total = sousTotal + frais;
 
             document.getElementById('formuleChoisieSocietes').textContent = selFormSoc;
@@ -763,6 +843,7 @@
             document.getElementById('totalIRPPSocietes').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersSocietes').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueSocietes').textContent = formatNumber(infoAnnuel) + ' €';
+            document.getElementById('tauxChancellerieLabelSocietes').textContent = tauxChancellerie;
             document.getElementById('fraisChancellerieSocietes').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelSocietes').textContent = formatNumber(total) + ' €';
         }
@@ -787,8 +868,8 @@
             selFormBNC = formule; prixBaseBNC = 0;
             document.querySelectorAll('#bnc-page .price-card').forEach(c => c.classList.remove('selected'));
             const cards = document.querySelectorAll('#bnc-page .price-card');
-            if(formule === 'ESSENTIEL') cards[0].classList.add('selected');
-            if(formule === 'PILOTAGE') cards[1].classList.add('selected');
+            if(formule === 'PILOTAGE') cards[0].classList.add('selected');
+            if(formule === 'ESSENTIEL') cards[1].classList.add('selected');
             calculerDevisBNC();
         }
 
@@ -809,17 +890,19 @@
                 mensuel = (selFormBNC === 'ESSENTIEL') ? grille.ess : grille.pil;
             }
 
+            const tarifBulletin = parseFloat(document.getElementById('tarifBulletinBNC').value)||0;
             const cpta = mensuel * 12;
-            const social = nbSal * 31 * 12;
+            const social = nbSal * tarifBulletin * 12;
             const ir = parseFloat(document.getElementById('irBNC').value)||0;
             const fonc = (parseInt(document.getElementById('nombreBiensBNC').value)||0) * 150;
-            
+
             // Calcul Informatique
             const infoMensuel = parseFloat(document.getElementById('infoMensuelBNC').value)||0;
             const infoAnnuel = infoMensuel * 12;
 
+            const tauxChancellerie = parseFloat(document.getElementById('tauxChancellerieBNC').value)||0;
             const sousTotal = cpta + social + ir + fonc + infoAnnuel;
-            const frais = sousTotal * 0.03;
+            const frais = sousTotal * (tauxChancellerie / 100);
             const total = sousTotal + frais;
 
             document.getElementById('formuleChoisieBNC').textContent = selFormBNC;
@@ -828,6 +911,7 @@
             document.getElementById('totalIRPPBNC').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersBNC').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueBNC').textContent = formatNumber(infoAnnuel) + ' €';
+            document.getElementById('tauxChancellerieLabelBNC').textContent = tauxChancellerie;
             document.getElementById('fraisChancellerieBNC').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelBNC').textContent = formatNumber(total) + ' €';
         }
