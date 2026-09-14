@@ -169,6 +169,7 @@
             font-family: 'Bahnschrift Light', sans-serif;
         }
         .input-group input:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.1); }
+        .input-group select option { color: #000; background: #fff; }
 
         /* API PAPPERS */
         .pappers-row {
@@ -704,6 +705,13 @@
             </div>
             <div class="input-group"><label>Cabinet</label><input type="text" id="confrereCabinet" placeholder="Ex: CABINET EPHISENS"></div>
             <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="Ex: Micropolis – Belle Aureille, 05000 GAP"></div>
+            <div class="input-group">
+                <label>Signataire</label>
+                <select id="confrereSignataire">
+                    <option value="Lucie DESBLANCS|Expert-comptable D.P.L.E.">Lucie DESBLANCS</option>
+                    <option value="Florent DESBLANCS|Expert-comptable D.P.L.E.">Florent DESBLANCS</option>
+                </select>
+            </div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('Confrere')">Annuler</button>
                 <button class="btn-api" style="flex:1;" onclick="genererCourrierConfrere()">Générer le courrier</button>
@@ -1229,6 +1237,7 @@
                 ? (document.getElementById('dirigeantsSocietes').value || clientNom)
                 : clientNom;
             const dateDebut = document.getElementById('dateDebutMission' + suffix).value;
+            const [signataireNom, signataireTitre] = document.getElementById('confrereSignataire').value.split('|');
 
             const data = {
                 confrere_civilite: civilite,
@@ -1239,8 +1248,8 @@
                 confrere_dirigeant: dirigeant,
                 confrere_date_debut: dateDebut,
                 confrere_lieu_date: 'Plan de Cuques, le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
-                confrere_signataire_nom: 'Lucie DESBLANCS',
-                confrere_signataire_titre: 'Expert-comptable D.P.L.E.'
+                confrere_signataire_nom: signataireNom,
+                confrere_signataire_titre: signataireTitre
             };
             for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
 
