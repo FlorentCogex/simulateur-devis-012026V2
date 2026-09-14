@@ -215,6 +215,14 @@
         }
         .ticket-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; color: #b0b0b0; }
         .ticket-row.highlight { color: white; font-weight: bold; }
+        .chancellerie-input {
+            width: 32px; background: transparent; border: none;
+            border-bottom: 1px dashed var(--border); color: var(--text-muted);
+            font-size: inherit; font-family: inherit; text-align: center; padding: 0;
+            -moz-appearance: textfield;
+        }
+        .chancellerie-input::-webkit-outer-spin-button, .chancellerie-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .chancellerie-input:focus { outline: none; border-color: var(--accent); color: var(--accent); }
         .ticket-total {
             margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: flex-end;
@@ -387,9 +395,6 @@
                         <div class="input-group"><label>IRPP (€)</label><input type="number" id="irSocietes" value="0" oninput="calculerDevisSocietes()"></div>
                         <div class="input-group"><label>Nb Biens Immo.</label><input type="number" id="nombreBiensSocietes" value="0" oninput="calculerRevenusFonciers('Societes')"></div>
                     </div>
-                    <div class="form-grid-2" style="margin-top: 20px;">
-                        <div class="input-group"><label>Frais de Chancellerie (%)</label><input type="number" id="tauxChancellerieSocietes" value="3" step="0.1" oninput="calculerDevisSocietes()"></div>
-                    </div>
                 </div>
 
                 <div class="section-block">
@@ -423,7 +428,7 @@
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersSocietes">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueSocietes">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
-                    <div class="ticket-row"><span>Chancellerie (<span id="tauxChancellerieLabelSocietes">3</span>%)</span><span id="fraisChancellerieSocietes">0,00 €</span></div>
+                    <div class="ticket-row"><span>Chancellerie (<input type="number" class="chancellerie-input" id="tauxChancellerieSocietes" value="3" step="0.1" oninput="calculerDevisSocietes()">%)</span><span id="fraisChancellerieSocietes">0,00 €</span></div>
                     
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
@@ -520,9 +525,6 @@
                         <div class="input-group"><label>IRPP (€)</label><input type="number" id="irBNC" value="0" oninput="calculerDevisBNC()"></div>
                         <div class="input-group"><label>Nb Biens Immo.</label><input type="number" id="nombreBiensBNC" value="0" oninput="calculerRevenusFonciers('BNC')"></div>
                     </div>
-                    <div class="form-grid-2" style="margin-top: 20px;">
-                        <div class="input-group"><label>Frais de Chancellerie (%)</label><input type="number" id="tauxChancellerieBNC" value="3" step="0.1" oninput="calculerDevisBNC()"></div>
-                    </div>
                 </div>
 
                 <div class="section-block">
@@ -555,7 +557,7 @@
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersBNC">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueBNC">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
-                    <div class="ticket-row"><span>Chancellerie (<span id="tauxChancellerieLabelBNC">3</span>%)</span><span id="fraisChancellerieBNC">0,00 €</span></div>
+                    <div class="ticket-row"><span>Chancellerie (<input type="number" class="chancellerie-input" id="tauxChancellerieBNC" value="3" step="0.1" oninput="calculerDevisBNC()">%)</span><span id="fraisChancellerieBNC">0,00 €</span></div>
                     
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
@@ -843,7 +845,6 @@
             document.getElementById('totalIRPPSocietes').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersSocietes').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueSocietes').textContent = formatNumber(infoAnnuel) + ' €';
-            document.getElementById('tauxChancellerieLabelSocietes').textContent = tauxChancellerie;
             document.getElementById('fraisChancellerieSocietes').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelSocietes').textContent = formatNumber(total) + ' €';
         }
@@ -911,7 +912,6 @@
             document.getElementById('totalIRPPBNC').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersBNC').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueBNC').textContent = formatNumber(infoAnnuel) + ' €';
-            document.getElementById('tauxChancellerieLabelBNC').textContent = tauxChancellerie;
             document.getElementById('fraisChancellerieBNC').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelBNC').textContent = formatNumber(total) + ' €';
         }
