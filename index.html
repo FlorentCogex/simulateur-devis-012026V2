@@ -244,6 +244,37 @@
         .modal.active { display: flex; align-items: center; justify-content: center; }
         .modal-content { background: var(--bg-panel); padding: 40px; border: 1px solid var(--accent); max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
 
+        /* DOSSIERS SAUVEGARDÉS */
+        .btn-lien {
+            background: none; border: none; color: var(--text-muted); cursor: pointer;
+            font-size: 0.9rem; font-family: 'Bahnschrift Light', sans-serif; text-decoration: underline;
+        }
+        .btn-lien:hover { color: var(--accent); }
+        .dossier-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid var(--border); gap: 10px;
+        }
+        .dossier-row:last-child { border-bottom: none; }
+        .dossier-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .dossier-actions .btn-api, .dossier-actions .btn-reset { padding: 8px 14px; height: auto; font-size: 0.8rem; }
+
+        /* PRESTATIONS ADDITIONNELLES */
+        .ligne-libre-row { display: grid; grid-template-columns: 1fr 140px auto; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .ligne-libre-row input {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white;
+            padding: 10px; border-radius: 4px; font-family: 'Bahnschrift Light', sans-serif; font-size: 0.95rem;
+        }
+        .ligne-libre-row input:focus { outline: none; border-color: var(--accent); }
+        .ligne-libre-row .btn-reset { padding: 8px 12px; height: auto; }
+
+        /* BOUTONS SECONDAIRES TICKET */
+        .btn-secondary-ticket {
+            width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 12px; margin-top: 10px; cursor: pointer; border-radius: 4px; font-size: 0.85rem;
+            font-family: 'Bahnschrift Light', sans-serif; transition: 0.3s;
+        }
+        .btn-secondary-ticket:hover { border-color: var(--accent); color: var(--accent); }
+
     </style>
 </head>
 <body>
@@ -270,6 +301,9 @@
                     <p>& autres structures sans capital</p>
                 </div>
             </div>
+            <div style="margin-top: 2.5rem;">
+                <button class="btn-lien" onclick="ouvrirModalDossiers()">📂 Mes dossiers sauvegardés</button>
+            </div>
         </div>
     </div>
 
@@ -277,7 +311,8 @@
         <div class="app-layout">
             <div class="main-content">
                 <div onclick="goToPage('home')" class="btn-back-nav">← Retour accueil</div>
-                
+                <input type="hidden" id="dossierIdSocietes" value="">
+
                 <div class="section-block">
                     <h3>Identification</h3>
                     <div class="pappers-row">
@@ -410,6 +445,12 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="section-block">
+                    <h3>Prestations Additionnelles</h3>
+                    <div id="lignesLibresSocietes"></div>
+                    <button class="btn-api" style="width:100%; margin-top:10px;" onclick="ajouterLigneLibre('Societes')">+ Ajouter une ligne</button>
+                </div>
             </div>
 
             <div class="sidebar-container">
@@ -427,9 +468,10 @@
                     <div class="ticket-row"><span>IRPP</span><span id="totalIRPPSocietes">0,00 €</span></div>
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersSocietes">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueSocietes">0,00 €</span></div>
+                    <div class="ticket-row"><span>Prestations addit.</span><span id="totalLignesLibresSocietes">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
                     <div class="ticket-row"><span>Chancellerie (<input type="number" class="chancellerie-input" id="tauxChancellerieSocietes" value="3" step="0.1" oninput="calculerDevisSocietes()">%)</span><span id="fraisChancellerieSocietes">0,00 €</span></div>
-                    
+
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
                         <span class="value" id="totalAnnuelSocietes">0,00 €</span>
@@ -437,6 +479,8 @@
                     <div style="text-align: right; color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">Montants exprimés en € HT</div>
 
                     <button class="btn-generate" onclick="ouvrirModal('Societes')">Éditer Lettre de Mission</button>
+                    <button class="btn-secondary-ticket" onclick="sauvegarderDossier('Societes')">💾 Enregistrer le dossier</button>
+                    <button class="btn-secondary-ticket" onclick="ouvrirModalConfrere('Societes')">✉️ Courrier Confrère (reprise dossier)</button>
                 </div>
             </div>
         </div>
@@ -446,7 +490,8 @@
         <div class="app-layout">
             <div class="main-content">
                 <div onclick="goToPage('home')" class="btn-back-nav">← Retour accueil</div>
-                
+                <input type="hidden" id="dossierIdBNC" value="">
+
                 <div class="section-block">
                     <h3>Identification</h3>
                     <div class="pappers-row">
@@ -540,6 +585,12 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="section-block">
+                    <h3>Prestations Additionnelles</h3>
+                    <div id="lignesLibresBNC"></div>
+                    <button class="btn-api" style="width:100%; margin-top:10px;" onclick="ajouterLigneLibre('BNC')">+ Ajouter une ligne</button>
+                </div>
             </div>
 
             <div class="sidebar-container">
@@ -556,9 +607,10 @@
                     <div class="ticket-row"><span>IRPP</span><span id="totalIRPPBNC">0,00 €</span></div>
                     <div class="ticket-row"><span>Rev. Fonciers</span><span id="revenusFonciersBNC">0,00 €</span></div>
                     <div class="ticket-row"><span>Informatique</span><span id="totalInformatiqueBNC">0,00 €</span></div>
+                    <div class="ticket-row"><span>Prestations addit.</span><span id="totalLignesLibresBNC">0,00 €</span></div>
                     <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0;">
                     <div class="ticket-row"><span>Chancellerie (<input type="number" class="chancellerie-input" id="tauxChancellerieBNC" value="3" step="0.1" oninput="calculerDevisBNC()">%)</span><span id="fraisChancellerieBNC">0,00 €</span></div>
-                    
+
                     <div class="ticket-total">
                         <span>TOTAL ANNUEL</span>
                         <span class="value" id="totalAnnuelBNC">0,00 €</span>
@@ -566,6 +618,8 @@
                     <div style="text-align: right; color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">Montants exprimés en € HT</div>
 
                     <button class="btn-generate" onclick="ouvrirModal('BNC')">Éditer Lettre de Mission</button>
+                    <button class="btn-secondary-ticket" onclick="sauvegarderDossier('BNC')">💾 Enregistrer le dossier</button>
+                    <button class="btn-secondary-ticket" onclick="ouvrirModalConfrere('BNC')">✉️ Courrier Confrère (reprise dossier)</button>
                 </div>
             </div>
         </div>
@@ -621,6 +675,42 @@
         </div>
     </div>
 
+    <div id="modalDossiers" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <h3>Dossiers Sauvegardés</h3>
+            <div class="input-group">
+                <input type="text" id="rechercheDossiers" placeholder="Rechercher un client..." oninput="renderListeDossiers()">
+            </div>
+            <div id="listeDossiers"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted); flex:1;" onclick="fermerModal('Dossiers')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalConfrere" class="modal">
+        <div class="modal-content">
+            <h3>Courrier Confraternel (Reprise de Dossier)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Les informations du client (nom, dirigeant, date de début de mission) sont reprises automatiquement depuis le dossier en cours.</p>
+            <div class="form-grid-2">
+                <div class="input-group">
+                    <label>Civilité</label>
+                    <select id="confrereCivilite">
+                        <option value="Cher Confrère">M. (Cher Confrère)</option>
+                        <option value="Chère Consœur">Mme (Chère Consœur)</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>Nom du Confrère</label><input type="text" id="confrereNom" placeholder="Ex: Edwige JACOB"></div>
+            </div>
+            <div class="input-group"><label>Cabinet</label><input type="text" id="confrereCabinet" placeholder="Ex: CABINET EPHISENS"></div>
+            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="Ex: Micropolis – Belle Aureille, 05000 GAP"></div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('Confrere')">Annuler</button>
+                <button class="btn-api" style="flex:1;" onclick="genererCourrierConfrere()">Générer le courrier</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== CONFIGURATION ====================
         const PAPPERS_API_KEY = 'eaf9ed4bd46ddbffd1209bf7c417fb60b9c528b7006377a4'; 
@@ -628,9 +718,17 @@
         // ==================== NAVIGATION & RESET ====================
         function resetData() {
             if(confirm("Tout effacer et recommencer ?")) {
+                const dossiers = localStorage.getItem('dossiersCogex');
                 localStorage.clear();
+                if(dossiers) localStorage.setItem('dossiersCogex', dossiers);
                 location.reload();
             }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
         }
 
         function goToPage(pageId) {
@@ -767,6 +865,53 @@
             return num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        // ==================== PRESTATIONS ADDITIONNELLES ====================
+        let lignesLibresSocietes = [];
+        let lignesLibresBNC = [];
+
+        function getLignesLibres(type) {
+            return (type === 'Societes') ? lignesLibresSocietes : lignesLibresBNC;
+        }
+
+        function ajouterLigneLibre(type) {
+            getLignesLibres(type).push({ description: '', montant: 0 });
+            renderLignesLibres(type);
+        }
+
+        function supprimerLigneLibre(type, index) {
+            getLignesLibres(type).splice(index, 1);
+            renderLignesLibres(type);
+            (type === 'Societes') ? calculerDevisSocietes() : calculerDevisBNC();
+        }
+
+        function majLigneLibre(type, index, champ, valeur) {
+            const arr = getLignesLibres(type);
+            if(!arr[index]) return;
+            arr[index][champ] = (champ === 'montant') ? (parseFloat(valeur)||0) : valeur;
+            (type === 'Societes') ? calculerDevisSocietes() : calculerDevisBNC();
+        }
+
+        function renderLignesLibres(type) {
+            const arr = getLignesLibres(type);
+            const container = document.getElementById('lignesLibres' + type);
+            if(!container) return;
+            if(arr.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Aucune prestation additionnelle.</p>';
+                return;
+            }
+            container.innerHTML = arr.map((ligne, i) => `
+                <div class="ligne-libre-row">
+                    <input type="text" placeholder="Description" value="${escapeHtml(ligne.description)}" oninput="majLigneLibre('${type}', ${i}, 'description', this.value)">
+                    <input type="number" placeholder="Montant (€)" value="${ligne.montant || ''}" oninput="majLigneLibre('${type}', ${i}, 'montant', this.value)">
+                    <button class="btn-reset" onclick="supprimerLigneLibre('${type}', ${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function totalLignesLibres(type) {
+            return getLignesLibres(type).reduce((sum, l) => sum + (parseFloat(l.montant)||0), 0);
+        }
+
         function calculerRevenusFonciers(type) {
             const nb = parseInt(document.getElementById('nombreBiens'+type).value) || 0;
             const mt = nb * 150;
@@ -833,8 +978,9 @@
             const infoMensuel = parseFloat(document.getElementById('infoMensuelSocietes').value)||0;
             const infoAnnuel = infoMensuel * 12;
 
+            const lignesLibresMt = totalLignesLibres('Societes');
             const tauxChancellerie = parseFloat(document.getElementById('tauxChancellerieSocietes').value)||0;
-            const sousTotal = cpta + social + pv + reg + ir + fonc + infoAnnuel;
+            const sousTotal = cpta + social + pv + reg + ir + fonc + infoAnnuel + lignesLibresMt;
             const frais = sousTotal * (tauxChancellerie / 100);
             const total = sousTotal + frais;
 
@@ -845,6 +991,7 @@
             document.getElementById('totalIRPPSocietes').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersSocietes').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueSocietes').textContent = formatNumber(infoAnnuel) + ' €';
+            document.getElementById('totalLignesLibresSocietes').textContent = formatNumber(lignesLibresMt) + ' €';
             document.getElementById('fraisChancellerieSocietes').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelSocietes').textContent = formatNumber(total) + ' €';
         }
@@ -901,8 +1048,9 @@
             const infoMensuel = parseFloat(document.getElementById('infoMensuelBNC').value)||0;
             const infoAnnuel = infoMensuel * 12;
 
+            const lignesLibresMt = totalLignesLibres('BNC');
             const tauxChancellerie = parseFloat(document.getElementById('tauxChancellerieBNC').value)||0;
-            const sousTotal = cpta + social + ir + fonc + infoAnnuel;
+            const sousTotal = cpta + social + ir + fonc + infoAnnuel + lignesLibresMt;
             const frais = sousTotal * (tauxChancellerie / 100);
             const total = sousTotal + frais;
 
@@ -912,8 +1060,192 @@
             document.getElementById('totalIRPPBNC').textContent = formatNumber(ir) + ' €';
             document.getElementById('revenusFonciersBNC').textContent = formatNumber(fonc) + ' €';
             document.getElementById('totalInformatiqueBNC').textContent = formatNumber(infoAnnuel) + ' €';
+            document.getElementById('totalLignesLibresBNC').textContent = formatNumber(lignesLibresMt) + ' €';
             document.getElementById('fraisChancellerieBNC').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelBNC').textContent = formatNumber(total) + ' €';
+        }
+
+        // ==================== DOSSIERS SAUVEGARDÉS ====================
+        const champsSocietes = [
+            'siretSocietes', 'nomDossierSocietes', 'caClientSocietes', 'nbSalariesSocietes',
+            'tarifBulletinSocietes', 'secteurActiviteSocietes', 'pvAgoSocietes', 'registresLegauxSocietes',
+            'irSocietes', 'nombreBiensSocietes', 'infoMensuelSocietes', 'infoCommentaireSocietes',
+            'tauxChancellerieSocietes', 'capitalSocietes', 'dateCreationSocietes', 'formeJuridiqueSocietes',
+            'adresseSocietes', 'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
+            'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes'
+        ];
+        const champsBNC = [
+            'siretBNC', 'nomDossierBNC', 'caClientBNC', 'nbSalariesBNC', 'tarifBulletinBNC',
+            'irBNC', 'nombreBiensBNC', 'infoMensuelBNC', 'infoCommentaireBNC', 'tauxChancellerieBNC',
+            'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'dateDebutMissionBNC',
+            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC'
+        ];
+
+        function collecterDossier(type) {
+            const champs = (type === 'Societes') ? champsSocietes : champsBNC;
+            const data = { type, savedAt: new Date().toISOString() };
+            champs.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) data[id] = el.value;
+            });
+            data.selFormule = (type === 'Societes') ? selFormSoc : selFormBNC;
+            data.prixBase = (type === 'Societes') ? prixBaseSoc : prixBaseBNC;
+            data.lignesLibres = getLignesLibres(type).map(l => ({ description: l.description, montant: l.montant }));
+            const totalEl = document.getElementById('totalAnnuel' + type);
+            data.totalAnnuel = totalEl ? totalEl.textContent : '';
+            return data;
+        }
+
+        function sauvegarderDossier(type, silencieux) {
+            const nomInput = document.getElementById('nomDossier' + type);
+            if(!nomInput || !nomInput.value.trim()) {
+                if(!silencieux) alert('Merci de renseigner le nom du dossier avant de sauvegarder.');
+                return null;
+            }
+            const dossiers = JSON.parse(localStorage.getItem('dossiersCogex') || '[]');
+            const data = collecterDossier(type);
+            const idField = document.getElementById('dossierId' + type);
+            const existingId = idField ? idField.value : '';
+
+            if(existingId) {
+                data.id = existingId;
+                const idx = dossiers.findIndex(d => d.id === existingId);
+                if(idx >= 0) dossiers[idx] = data; else dossiers.push(data);
+            } else {
+                data.id = 'd_' + Date.now();
+                dossiers.push(data);
+                if(idField) idField.value = data.id;
+            }
+
+            localStorage.setItem('dossiersCogex', JSON.stringify(dossiers));
+            if(!silencieux) alert('✅ Dossier "' + nomInput.value + '" enregistré.');
+            return data.id;
+        }
+
+        function appliquerDossier(data) {
+            const type = data.type;
+            const champs = (type === 'Societes') ? champsSocietes : champsBNC;
+            champs.forEach(id => {
+                const el = document.getElementById(id);
+                if(el && data[id] !== undefined) el.value = data[id];
+            });
+
+            const idField = document.getElementById('dossierId' + type);
+            if(idField) idField.value = data.id;
+
+            if(type === 'Societes') {
+                selFormSoc = data.selFormule || null;
+                prixBaseSoc = data.prixBase || 0;
+                lignesLibresSocietes = data.lignesLibres || [];
+                calculerTarifsSocietes();
+                document.querySelectorAll('#societes-page .price-card').forEach(c => c.classList.remove('selected'));
+                const cards = document.querySelectorAll('#societes-page .price-card');
+                if(selFormSoc === 'PERFORMANCE') cards[0].classList.add('selected');
+                if(selFormSoc === 'PILOTAGE') cards[1].classList.add('selected');
+                if(selFormSoc === 'ESSENTIEL') cards[2].classList.add('selected');
+                renderLignesLibres('Societes');
+                calculerDevisSocietes();
+                updateSummary('Societes');
+            } else {
+                selFormBNC = data.selFormule || null;
+                prixBaseBNC = data.prixBase || 0;
+                lignesLibresBNC = data.lignesLibres || [];
+                calculerTarifsBNC();
+                document.querySelectorAll('#bnc-page .price-card').forEach(c => c.classList.remove('selected'));
+                const cards = document.querySelectorAll('#bnc-page .price-card');
+                if(selFormBNC === 'PILOTAGE') cards[0].classList.add('selected');
+                if(selFormBNC === 'ESSENTIEL') cards[1].classList.add('selected');
+                renderLignesLibres('BNC');
+                calculerDevisBNC();
+                updateSummary('BNC');
+            }
+        }
+
+        function ouvrirDossier(id) {
+            const dossiers = JSON.parse(localStorage.getItem('dossiersCogex') || '[]');
+            const data = dossiers.find(d => d.id === id);
+            if(!data) return;
+            fermerModal('Dossiers');
+            goToPage(data.type === 'Societes' ? 'societes' : 'bnc');
+            appliquerDossier(data);
+        }
+
+        function supprimerDossier(id) {
+            if(!confirm('Supprimer ce dossier définitivement ?')) return;
+            let dossiers = JSON.parse(localStorage.getItem('dossiersCogex') || '[]');
+            dossiers = dossiers.filter(d => d.id !== id);
+            localStorage.setItem('dossiersCogex', JSON.stringify(dossiers));
+            renderListeDossiers();
+        }
+
+        function renderListeDossiers() {
+            const dossiers = JSON.parse(localStorage.getItem('dossiersCogex') || '[]')
+                .sort((a,b) => new Date(b.savedAt) - new Date(a.savedAt));
+            const q = (document.getElementById('rechercheDossiers')?.value || '').toLowerCase();
+            const filtered = dossiers.filter(d => !q || (d['nomDossier'+d.type] || '').toLowerCase().includes(q));
+            const container = document.getElementById('listeDossiers');
+            if(filtered.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 20px;">Aucun dossier sauvegardé.</p>';
+                return;
+            }
+            container.innerHTML = filtered.map(d => `
+                <div class="dossier-row">
+                    <div>
+                        <strong>${escapeHtml(d['nomDossier'+d.type] || 'Sans nom')}</strong>
+                        <div style="color:var(--text-muted); font-size:0.75rem;">${d.type === 'Societes' ? 'Sociétés' : 'BNC'} · ${escapeHtml(d.selFormule || '—')} · ${escapeHtml(d.totalAnnuel || '')} · ${new Date(d.savedAt).toLocaleDateString('fr-FR')}</div>
+                    </div>
+                    <div class="dossier-actions">
+                        <button class="btn-api" onclick="ouvrirDossier('${d.id}')">Ouvrir</button>
+                        <button class="btn-reset" onclick="supprimerDossier('${d.id}')">🗑</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function ouvrirModalDossiers() {
+            renderListeDossiers();
+            ouvrirModal('Dossiers');
+        }
+
+        // ==================== COURRIER CONFRÈRE ====================
+        let typeConfrereActuel = 'Societes';
+
+        function ouvrirModalConfrere(type) {
+            typeConfrereActuel = type;
+            ouvrirModal('Confrere');
+        }
+
+        function genererCourrierConfrere() {
+            const nom = document.getElementById('confrereNom').value.trim();
+            const cabinet = document.getElementById('confrereCabinet').value.trim();
+            if(!nom || !cabinet) { alert('Merci de renseigner le nom du confrère et le cabinet.'); return; }
+
+            const suffix = typeConfrereActuel;
+            const civilite = document.getElementById('confrereCivilite').value;
+            const adresse = document.getElementById('confrereAdresse').value.trim();
+
+            const clientNom = document.getElementById('nomDossier' + suffix).value || 'le client';
+            const dirigeant = (suffix === 'Societes')
+                ? (document.getElementById('dirigeantsSocietes').value || clientNom)
+                : clientNom;
+            const dateDebut = document.getElementById('dateDebutMission' + suffix).value;
+
+            const data = {
+                confrere_civilite: civilite,
+                confrere_nom: nom,
+                confrere_cabinet: cabinet,
+                confrere_adresse: adresse,
+                confrere_client_nom: clientNom,
+                confrere_dirigeant: dirigeant,
+                confrere_date_debut: dateDebut,
+                confrere_lieu_date: 'Plan de Cuques, le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
+                confrere_signataire_nom: 'Lucie DESBLANCS',
+                confrere_signataire_titre: 'Expert-comptable D.P.L.E.'
+            };
+            for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
+
+            fermerModal('Confrere');
+            window.open('COGEX_Lettre_Confrere.html', '_blank');
         }
 
         // ==================== GENERATION PDF ====================
@@ -956,15 +1288,23 @@
             data.fraisChancellerie = document.getElementById('fraisChancellerie' + suffix).textContent.replace(' €','').trim();
             data.totalAnnuel = document.getElementById('totalAnnuel' + suffix).textContent.replace(' €','').trim();
             data.nbSalaries = document.getElementById('nbSalaries' + suffix).value;
+            data.lignesLibres = JSON.stringify(getLignesLibres(suffix));
 
             for (const [key, value] of Object.entries(data)) { localStorage.setItem(key, value || ''); }
-            
+
+            // Sauvegarde automatique du dossier dans l'historique (silencieuse)
+            sauvegarderDossier(suffix, true);
+
             if (type === 'Societes') {
                 window.open('COGEX_Lettre_Mission_Societes_FINALE.html', '_blank');
             } else {
                 window.open('COGEX_Lettre_Mission_BNC_FINALE.html', '_blank');
             }
         }
+
+        // ==================== INITIALISATION ====================
+        renderLignesLibres('Societes');
+        renderLignesLibres('BNC');
     </script>
 </body>
 </html>
