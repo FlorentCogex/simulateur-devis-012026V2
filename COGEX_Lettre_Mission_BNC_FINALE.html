@@ -857,7 +857,7 @@
             <div class="header-profession">Experts-comptables</div>
         </div>
         <div class="header-right">
-            <img src="Logo-COGEX-ok-vectoriseì-950-Ko.jpg" alt="COGEX">
+            <img src="logo-cogex.jpg" alt="COGEX">
         </div>
     </div>
 
@@ -1282,6 +1282,8 @@
         <div class="tariff-label" style="flex: 1;">Mission Informatique <br><span style="font-size:0.8em; font-weight:normal; font-style:italic;">{{INFORMATIQUE_COMMENT}}</span></div>
         <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">{{INFORMATIQUE_MT}}</div>
     </div>
+
+    {{LIGNES_LIBRES}}
 
     <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
         <div class="tariff-label" style="flex: 1;">Frais de chancellerie</div>
@@ -2000,6 +2002,18 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             html = html.replaceAll('{{REVENUS_FONCIERS}}', formaterMontant(store.getItem('revenusFonciers')) + ' €');
             html = html.replaceAll('{{INFORMATIQUE_MT}}', formaterMontant(store.getItem('informatiqueAnnuel')) + ' €');
             html = html.replaceAll('{{INFORMATIQUE_COMMENT}}', store.getItem('informatiqueCommentaire') || '');
+
+            // Prestations additionnelles (lignes libres)
+            let lignesLibresHtml = '';
+            try {
+                const lignes = JSON.parse(store.getItem('lignesLibres') || '[]');
+                lignesLibresHtml = lignes.filter(l => l.description || l.montant).map(l => `
+    <div class="tariff-row" style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd;">
+        <div class="tariff-label" style="flex: 1;">${l.description || 'Prestation additionnelle'}</div>
+        <div class="tariff-price" style="flex: 0 0 150px; text-align: right; font-weight: bold; color: #1a4d2e;">${formaterMontant(l.montant)} €</div>
+    </div>`).join('');
+            } catch(e) { /* pas de lignes libres */ }
+            html = html.replaceAll('{{LIGNES_LIBRES}}', lignesLibresHtml);
 
             document.body.innerHTML = html;
         }, 100);

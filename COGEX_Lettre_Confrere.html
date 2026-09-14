@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courrier Confraternel - Cabinet Cogex</title>
+<style>
+    @font-face {
+        font-family: 'Bahnschrift Light';
+        src: local('Bahnschrift Light'), local('Bahnschrift');
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
+        font-size: 11pt;
+        line-height: 1.6;
+        color: #333;
+        background-color: #555;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .no-print {
+        position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; gap: 10px;
+    }
+    .no-print button {
+        padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;
+        font-family: 'Segoe UI', sans-serif; border: 2px solid #1a4d2e;
+    }
+    .btn-save { background: #fff; color: #1a4d2e; }
+    .btn-print { background: #1a4d2e; color: white; }
+
+    .page-header {
+        display: none;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: 3cm;
+        border-bottom: 1px solid #1a4d2e;
+        padding: 0 40px;
+        margin-bottom: 2cm;
+        background-color: white;
+    }
+    .header-left { display: flex; flex-direction: column; justify-content: center; }
+    .header-company-name { font-size: 14px; font-weight: bold; color: #1a4d2e; margin-bottom: 5px; }
+    .header-profession { font-size: 12px; color: #1a4d2e; }
+    .header-right { display: flex; align-items: flex-start; height: 100%; }
+    .header-right img { height: 48px; object-fit: contain; }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 50px 60px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .lieu-date { text-align: right; margin-bottom: 40px; font-weight: bold; }
+
+    .recipient-block { margin-bottom: 40px; }
+    .recipient-block div { line-height: 1.4; }
+    .recipient-name { font-weight: bold; }
+
+    .objet { font-weight: bold; margin-bottom: 30px; }
+
+    p { margin-bottom: 18px; text-align: justify; }
+
+    .signature-block { margin-top: 50px; text-align: right; }
+    .signature-name { font-weight: bold; }
+
+    .page-footer {
+        display: none;
+        text-align: center;
+        font-size: 11px;
+        color: #333;
+        line-height: 1.1;
+    }
+    .footer-line { margin-bottom: 2px; }
+
+    @media print {
+        .no-print { display: none !important; }
+
+        @page { size: A4; margin: 15mm; }
+
+        html, body { margin: 0 !important; padding: 0 !important; width: 100%; height: auto; }
+        body { background-color: white !important; color: #333; }
+
+        .page-header {
+            display: block !important; width: 100%;
+            border-bottom: 1px solid #1a4d2e; padding: 0 0 0.5cm 0; margin: 0 0 1cm 0;
+            background-color: white; page-break-inside: avoid; page-break-after: avoid;
+        }
+        .header-left, .header-right { display: inline-block; vertical-align: top; }
+        .header-left { width: 70%; }
+        .header-right { width: 28%; text-align: right; }
+
+        .container { max-width: 100%; padding: 0 10mm; box-shadow: none; }
+
+        .page-footer { display: block !important; margin-top: 1.5cm; }
+    }
+</style>
+
+    <script>
+        function formaterDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        }
+
+        function sauvegarderFichier() {
+            const nomClient = localStorage.getItem('confrere_client_nom') || 'Client';
+            const dateObj = new Date();
+            const jour = String(dateObj.getDate()).padStart(2, '0');
+            const mois = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const annee = dateObj.getFullYear();
+            const dateDuJour = jour + mois + annee;
+
+            const nomFichierParDefaut = "Lettre_Confrere_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour;
+            const nomFichier = prompt("Nom du fichier à sauvegarder :", nomFichierParDefaut);
+
+            if (nomFichier) {
+                const clone = document.documentElement.cloneNode(true);
+                const boutons = clone.querySelector('.no-print');
+                if(boutons) boutons.remove();
+
+                const htmlContent = "<!DOCTYPE html>" + clone.outerHTML;
+                const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = nomFichier + ".html";
+                link.click();
+            }
+        }
+
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                let html = document.body.innerHTML;
+                const store = localStorage;
+
+                html = html.replaceAll('{{CIVILITE}}', store.getItem('confrere_civilite') || 'Cher Confrère');
+                html = html.replaceAll('{{CONFRERE_NOM}}', store.getItem('confrere_nom') || '');
+                html = html.replaceAll('{{CONFRERE_CABINET}}', store.getItem('confrere_cabinet') || '');
+                html = html.replaceAll('{{CONFRERE_ADRESSE}}', store.getItem('confrere_adresse') || '');
+                html = html.replaceAll('{{CLIENT_NOM}}', store.getItem('confrere_client_nom') || '');
+                html = html.replaceAll('{{DIRIGEANT}}', store.getItem('confrere_dirigeant') || '');
+                html = html.replaceAll('{{DATE_DEBUT}}', formaterDate(store.getItem('confrere_date_debut')));
+                html = html.replaceAll('{{LIEU_DATE}}', store.getItem('confrere_lieu_date') || '');
+                html = html.replaceAll('{{SIGNATAIRE_NOM}}', store.getItem('confrere_signataire_nom') || '');
+                html = html.replaceAll('{{SIGNATAIRE_TITRE}}', store.getItem('confrere_signataire_titre') || '');
+
+                document.body.innerHTML = html;
+            }, 100);
+        });
+    </script>
+</head>
+<body>
+    <div class="no-print">
+        <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+    </div>
+
+    <div class="page-header">
+        <div class="header-left">
+            <div class="header-company-name">Lucie DESBLANCS & Florent DESBLANCS</div>
+            <div class="header-profession">Experts-comptables</div>
+        </div>
+        <div class="header-right">
+            <img src="logo-cogex.jpg" alt="COGEX">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="lieu-date">{{LIEU_DATE}}</div>
+
+        <div class="recipient-block">
+            <div class="recipient-name">{{CONFRERE_NOM}}</div>
+            <div>{{CONFRERE_CABINET}}</div>
+            <div>{{CONFRERE_ADRESSE}}</div>
+        </div>
+
+        <div class="objet">Objet : reprise dossier {{CLIENT_NOM}}</div>
+
+        <p>{{CIVILITE}},</p>
+
+        <p>Nous sommes sollicités par {{DIRIGEANT}} pour assurer une mission de présentation à compter du {{DATE_DEBUT}} de la {{CLIENT_NOM}}.</p>
+
+        <p>Conformément à l'article 163 du décret du 30 mars 2012, nous vous prions de bien vouloir nous faire savoir si rien ne s'oppose à notre entrée en fonction sur ce dossier, dans un délai compatible avec le bon exercice de notre mission.</p>
+
+        <p>En cas de non-réponse sous quinzaine, nous en déduirons que rien ne s'oppose à notre entrée en fonction.</p>
+
+        <p>Nous vous prions d'agréer, {{CIVILITE}}, en l'expression de nos salutations confraternelles.</p>
+
+        <div class="signature-block">
+            <div class="signature-name">{{SIGNATAIRE_NOM}}</div>
+            <div>{{SIGNATAIRE_TITRE}}</div>
+        </div>
+    </div>
+
+    <div class="page-footer">
+        <div class="footer-line">Bd Ange Delestrade – Résidence Centre Sud 2 – Bt C</div>
+        <div class="footer-line">13380 Plan de Cuques</div>
+        <div class="footer-line">Siret 434 115 002 00041 APE 6920Z</div>
+        <div class="footer-line">07 70 02 86 66 – lucie.desblancs@cabinet-cogex.fr</div>
+    </div>
+</body>
+</html>
