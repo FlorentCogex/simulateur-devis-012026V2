@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lettre de Résiliation de Mission</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background-color: #555;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .no-print {
+        position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; gap: 10px;
+    }
+    .no-print button {
+        padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;
+        font-family: Arial, sans-serif; border: 2px solid #333;
+    }
+    .btn-save { background: #fff; color: #333; }
+    .btn-print { background: #333; color: white; }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 60px 70px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    .sender-block { margin-bottom: 40px; }
+    .sender-block div { line-height: 1.4; }
+    .sender-name { font-weight: bold; text-transform: uppercase; }
+
+    .recipient-block { text-align: right; margin-bottom: 10px; }
+    .recipient-block div { line-height: 1.4; }
+    .recipient-name { font-weight: bold; text-transform: uppercase; }
+
+    .lieu-date { text-align: right; margin: 30px 0 10px 0; }
+    .reference { margin-bottom: 30px; font-size: 10pt; }
+
+    p { margin-bottom: 16px; text-align: justify; }
+
+    ul.motifs { margin: 0 0 16px 30px; }
+    ul.motifs li { margin-bottom: 8px; text-align: justify; }
+
+    .signature-block { margin-top: 50px; text-align: right; }
+    .signature-name { font-weight: bold; }
+
+    @media print {
+        .no-print { display: none !important; }
+        @page { size: A4; margin: 20mm; }
+        html, body { margin: 0 !important; padding: 0 !important; width: 100%; height: auto; }
+        body { background-color: white !important; }
+        .container { max-width: 100%; padding: 0; box-shadow: none; }
+    }
+</style>
+
+    <script>
+        function formaterDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        }
+
+        function sauvegarderFichier() {
+            const nomClient = localStorage.getItem('rupture_client_nom') || 'Client';
+            const dateObj = new Date();
+            const jour = String(dateObj.getDate()).padStart(2, '0');
+            const mois = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const annee = dateObj.getFullYear();
+            const dateDuJour = jour + mois + annee;
+
+            const nomFichierParDefaut = "Lettre_Resiliation_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour;
+            const nomFichier = prompt("Nom du fichier à sauvegarder :", nomFichierParDefaut);
+
+            if (nomFichier) {
+                const clone = document.documentElement.cloneNode(true);
+                const boutons = clone.querySelector('.no-print');
+                if(boutons) boutons.remove();
+
+                const htmlContent = "<!DOCTYPE html>" + clone.outerHTML;
+                const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = nomFichier + ".html";
+                link.click();
+            }
+        }
+
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                let html = document.body.innerHTML;
+                const store = localStorage;
+
+                html = html.replaceAll('{{CLIENT_NOM}}', store.getItem('rupture_client_nom') || '');
+                html = html.replaceAll('{{CLIENT_ADRESSE}}', store.getItem('rupture_client_adresse') || '');
+                html = html.replaceAll('{{CLIENT_SIRET}}', store.getItem('rupture_client_siret') || '');
+                html = html.replaceAll('{{CLIENT_FORME_CAPITAL}}', store.getItem('rupture_client_forme_capital') || '');
+                html = html.replaceAll('{{CABINET_ACTUEL_NOM}}', store.getItem('rupture_cabinet_nom') || '');
+                html = html.replaceAll('{{CABINET_ACTUEL_ADRESSE}}', store.getItem('rupture_cabinet_adresse') || '');
+                html = html.replaceAll('{{LIEU_DATE}}', store.getItem('rupture_lieu_date') || '');
+                html = html.replaceAll('{{CIVILITE}}', store.getItem('rupture_civilite') || 'Monsieur');
+                html = html.replaceAll('{{DATE_EFFET}}', formaterDate(store.getItem('rupture_date_effet')));
+                html = html.replaceAll('{{CLAUSE_REFERENCE}}', store.getItem('rupture_clause_reference') || '');
+                html = html.replaceAll('{{SIGNATAIRE_NOM}}', store.getItem('rupture_signataire_nom') || '');
+                html = html.replaceAll('{{SIGNATAIRE_QUALITE}}', store.getItem('rupture_signataire_qualite') || '');
+
+                // Motifs de résiliation (liste à puces, une ligne par motif)
+                let motifsHtml = '';
+                try {
+                    const motifs = JSON.parse(store.getItem('rupture_motifs') || '[]');
+                    if (motifs.length > 0) {
+                        motifsHtml = '<p>En effet, je considère que les termes de votre lettre de mission ne sont pas respectés :</p><ul class="motifs">'
+                            + motifs.map(m => `<li>${m}</li>`).join('')
+                            + '</ul>';
+                    }
+                } catch(e) { /* pas de motifs */ }
+                html = html.replaceAll('{{MOTIFS_BLOC}}', motifsHtml);
+
+                document.body.innerHTML = html;
+            }, 100);
+        });
+    </script>
+</head>
+<body>
+    <div class="no-print">
+        <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+    </div>
+
+    <div class="container">
+        <div class="sender-block">
+            <div class="sender-name">{{CLIENT_NOM}}</div>
+            <div>{{CLIENT_ADRESSE}}</div>
+            <div>{{CLIENT_SIRET}}</div>
+            <div>{{CLIENT_FORME_CAPITAL}}</div>
+        </div>
+
+        <div class="recipient-block">
+            <div class="recipient-name">{{CABINET_ACTUEL_NOM}}</div>
+            <div>{{CABINET_ACTUEL_ADRESSE}}</div>
+        </div>
+
+        <div class="lieu-date">{{LIEU_DATE}}</div>
+        <div class="reference">LR/AR</div>
+
+        <p>{{CIVILITE}},</p>
+
+        <p>Je vous informe, par la présente, de mon intention de résilier la mission qui nous lie avec effet au {{DATE_EFFET}}{{CLAUSE_REFERENCE}}.</p>
+
+        {{MOTIFS_BLOC}}
+
+        <p>Je vous prie de bien vouloir cesser tout prélèvement et facturation à compter du {{DATE_EFFET}} et mettre à jour notre dossier comptable avant de le transférer vers notre nouveau cabinet.</p>
+
+        <p>Je vous prie d'agréer, {{CIVILITE}}, l'expression de ma considération distinguée.</p>
+
+        <div class="signature-block">
+            <div class="signature-name">{{SIGNATAIRE_NOM}}</div>
+            <div>{{SIGNATAIRE_QUALITE}}</div>
+        </div>
+    </div>
+</body>
+</html>

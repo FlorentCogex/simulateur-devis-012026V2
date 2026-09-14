@@ -482,6 +482,7 @@
                     <button class="btn-generate" onclick="ouvrirModal('Societes')">Éditer Lettre de Mission</button>
                     <button class="btn-secondary-ticket" onclick="sauvegarderDossier('Societes')">💾 Enregistrer le dossier</button>
                     <button class="btn-secondary-ticket" onclick="ouvrirModalConfrere('Societes')">✉️ Courrier Confrère (reprise dossier)</button>
+                    <button class="btn-secondary-ticket" onclick="ouvrirModalRupture('Societes')">📤 Lettre de Résiliation (côté client)</button>
                 </div>
             </div>
         </div>
@@ -621,6 +622,7 @@
                     <button class="btn-generate" onclick="ouvrirModal('BNC')">Éditer Lettre de Mission</button>
                     <button class="btn-secondary-ticket" onclick="sauvegarderDossier('BNC')">💾 Enregistrer le dossier</button>
                     <button class="btn-secondary-ticket" onclick="ouvrirModalConfrere('BNC')">✉️ Courrier Confrère (reprise dossier)</button>
+                    <button class="btn-secondary-ticket" onclick="ouvrirModalRupture('BNC')">📤 Lettre de Résiliation (côté client)</button>
                 </div>
             </div>
         </div>
@@ -715,6 +717,58 @@
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('Confrere')">Annuler</button>
                 <button class="btn-api" style="flex:1;" onclick="genererCourrierConfrere()">Générer le courrier</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalRupture" class="modal">
+        <div class="modal-content">
+            <h3>Lettre de Résiliation (côté client)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Ce courrier est rédigé au nom du client, à destination de son cabinet actuel — COGEX n'y apparaît jamais. Le nom, l'adresse, le SIRET (et le capital pour les sociétés) du client sont repris automatiquement du dossier en cours.</p>
+
+            <h3>Cabinet Actuel (destinataire)</h3>
+            <div class="input-group"><label>Nom du Cabinet</label><input type="text" id="ruptureCabinetNom" placeholder="Ex: CEGEX LITTORAL"></div>
+            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="ruptureCabinetAdresse" placeholder="Ex: 228, Bd National, 13003 MARSEILLE"></div>
+
+            <h3>Résiliation</h3>
+            <div class="form-grid-2">
+                <div class="input-group">
+                    <label>Ville (pour l'en-tête lieu/date)</label>
+                    <input type="text" id="ruptureVille" placeholder="Ex: Allauch">
+                </div>
+                <div class="input-group">
+                    <label>Date d'effet</label>
+                    <input type="date" id="ruptureDateEffet">
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="input-group">
+                    <label>Civilité</label>
+                    <select id="ruptureCivilite">
+                        <option value="Monsieur">Monsieur</option>
+                        <option value="Madame">Madame</option>
+                        <option value="Madame, Monsieur">Madame, Monsieur</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Référence lettre de mission (optionnel)</label>
+                    <input type="text" id="ruptureReference" placeholder="Ex: l'article D - 2e alinéa - page 8">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Motifs de la résiliation (un par ligne, optionnel)</label>
+                <textarea id="ruptureMotifs" rows="4" placeholder="Ex: Aucun accompagnement en phase de démarrage" style="width:100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; font-family: 'Bahnschrift Light', sans-serif; font-size: 1rem;"></textarea>
+            </div>
+
+            <h3>Signataire (côté client)</h3>
+            <div class="form-grid-2">
+                <div class="input-group"><label>Nom</label><input type="text" id="ruptureSignataireNom" placeholder="Ex: Loïc ASSANTE"></div>
+                <div class="input-group"><label>Qualité (optionnel)</label><input type="text" id="ruptureSignataireQualite" placeholder="Ex: Gérant"></div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('Rupture')">Annuler</button>
+                <button class="btn-api" style="flex:1;" onclick="genererLettreRupture()">Générer le courrier</button>
             </div>
         </div>
     </div>
@@ -1255,6 +1309,65 @@
 
             fermerModal('Confrere');
             window.open('COGEX_Lettre_Confrere.html', '_blank');
+        }
+
+        // ==================== LETTRE DE RÉSILIATION (CÔTÉ CLIENT) ====================
+        let typeRuptureActuel = 'Societes';
+
+        function ouvrirModalRupture(type) {
+            typeRuptureActuel = type;
+            const dirigeant = (type === 'Societes')
+                ? document.getElementById('dirigeantsSocietes').value
+                : document.getElementById('nomDossierBNC').value;
+            const champSignataire = document.getElementById('ruptureSignataireNom');
+            if(champSignataire && !champSignataire.value) champSignataire.value = dirigeant || '';
+            ouvrirModal('Rupture');
+        }
+
+        function genererLettreRupture() {
+            const cabinetNom = document.getElementById('ruptureCabinetNom').value.trim();
+            if(!cabinetNom) { alert('Merci de renseigner le nom du cabinet actuel du client.'); return; }
+
+            const suffix = typeRuptureActuel;
+            const clientNom = document.getElementById('nomDossier' + suffix).value || 'le client';
+            const clientAdresse = document.getElementById('adresse' + suffix).value || '';
+            const clientSiret = document.getElementById('siret' + suffix).value || '';
+
+            let formeCapital = '';
+            if(suffix === 'Societes') {
+                const forme = document.getElementById('formeJuridiqueSocietes').value || '';
+                const capital = document.getElementById('capitalSocietes').value || '';
+                formeCapital = [forme, capital ? ('capital ' + capital) : ''].filter(Boolean).join(' ');
+            }
+
+            const ville = document.getElementById('ruptureVille').value.trim();
+            const dateEffet = document.getElementById('ruptureDateEffet').value;
+
+            const reference = document.getElementById('ruptureReference').value.trim();
+            const clauseReference = reference ? (', dans les conditions prévues à ' + reference + ' de votre lettre de mission') : '';
+
+            const motifsBrut = document.getElementById('ruptureMotifs').value;
+            const motifs = motifsBrut.split('\n').map(m => m.trim()).filter(Boolean);
+
+            const data = {
+                rupture_client_nom: clientNom,
+                rupture_client_adresse: clientAdresse,
+                rupture_client_siret: clientSiret ? ('Siret ' + clientSiret) : '',
+                rupture_client_forme_capital: formeCapital,
+                rupture_cabinet_nom: cabinetNom,
+                rupture_cabinet_adresse: document.getElementById('ruptureCabinetAdresse').value,
+                rupture_lieu_date: (ville ? (ville + ', le ') : 'Le ') + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
+                rupture_civilite: document.getElementById('ruptureCivilite').value,
+                rupture_date_effet: dateEffet,
+                rupture_clause_reference: clauseReference,
+                rupture_signataire_nom: document.getElementById('ruptureSignataireNom').value,
+                rupture_signataire_qualite: document.getElementById('ruptureSignataireQualite').value,
+                rupture_motifs: JSON.stringify(motifs)
+            };
+            for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
+
+            fermerModal('Rupture');
+            window.open('COGEX_Lettre_Rupture.html', '_blank');
         }
 
         // ==================== GENERATION PDF ====================
