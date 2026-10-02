@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courrier Confraternel - Cabinet Cogex</title>
+    <script src="export-word.js"></script>
 <style>
     @font-face {
         font-family: 'Bahnschrift Light';
@@ -157,10 +158,6 @@
             clone.querySelectorAll('.no-print').forEach(el => el.remove());
             clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
             clone.removeAttribute('contenteditable');
-            // Adresse absolue des images pour que Word puisse les afficher
-            clone.querySelectorAll('img').forEach(img => {
-                img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
-            });
             // En-tête : Word ne gère pas flex, on le transforme en tableau
             const entete = clone.querySelector('.page-header');
             if (entete) {
@@ -172,14 +169,7 @@
                     + (img ? img.outerHTML : '') + '</td></tr></table>';
             }
 
-            const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-                + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
-                + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
-            const blob = new Blob(['﻿', html], { type: 'application/msword' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = nomFichier + '.doc';
-            link.click();
+            exporterWord(clone, nomFichier, cssWord);
         }
 
         const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;

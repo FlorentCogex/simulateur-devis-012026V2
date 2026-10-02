@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Mission - Cabinet Cogex</title>
+    <script src="export-word.js"></script>
 <style>
     /* 1. DÉCLARATION DES POLICES */
     @font-face {
@@ -1358,7 +1359,7 @@
             <div class="signature-block">
                 <p><strong>Bon pour accord</strong></p>
                 <p><strong>L'Expert-comptable :</strong></p>
-                <div class="signature-line">Florent DESBLANCS</div>
+                <div class="signature-line">{{SIGNATAIRE_CABINET}}</div>
             </div>
         </div>
 
@@ -1943,10 +1944,6 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
         clone.querySelectorAll('.no-print, script').forEach(el => el.remove());
         clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
         clone.removeAttribute('contenteditable');
-        // Adresse absolue des images pour que Word puisse les afficher
-        clone.querySelectorAll('img').forEach(img => {
-            img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
-        });
 
         const entete = clone.querySelector('.page-header');
         if (entete) {
@@ -1990,14 +1987,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             .footer-line { text-align: center; margin: 0; font-size: 9pt; }
         `;
 
-        const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-            + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
-            + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
-        const blob = new Blob(['﻿', html], { type: 'application/msword' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = nomFichier + '.doc';
-        link.click();
+        exporterWord(clone, nomFichier, cssWord);
     }
 
     // 2. UTILITAIRES DE FORMATAGE
@@ -2041,6 +2031,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             html = html.replaceAll('{{ADRESSE}}', store.getItem('adresse') || '');
             html = html.replaceAll('{{ACTIVITE}}', store.getItem('activite') || '');
             html = html.replaceAll('{{DIRIGEANTS_COMPLET}}', store.getItem('dirigeants') || '');
+            html = html.replaceAll('{{SIGNATAIRE_CABINET}}', store.getItem('signataire_cabinet') || 'Florent DESBLANCS');
             
             // Année exercice
             const dateFin = store.getItem('date_fin');

@@ -649,6 +649,14 @@
                 <div class="input-group"><label>Fin 1er Exercice</label><input type="date" id="dateFinExerciceSocietes"></div>
             </div>
             
+            <div class="input-group">
+                <label>Signataire du cabinet</label>
+                <select id="signataireSocietes">
+                    <option value="Florent DESBLANCS">Florent DESBLANCS</option>
+                    <option value="Lucie DESBLANCS">Lucie DESBLANCS</option>
+                </select>
+            </div>
+
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('Societes')">Annuler</button>
                 <button class="btn-api" style="flex:1;" onclick="genererLettre('Societes')">Générer PDF</button>
@@ -671,6 +679,14 @@
                 <div class="input-group"><label>Fin 1er Exercice</label><input type="date" id="dateFinExerciceBNC"></div>
             </div>
             
+            <div class="input-group">
+                <label>Signataire du cabinet</label>
+                <select id="signataireBNC">
+                    <option value="Florent DESBLANCS">Florent DESBLANCS</option>
+                    <option value="Lucie DESBLANCS">Lucie DESBLANCS</option>
+                </select>
+            </div>
+
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn-reset" style="border: 1px solid var(--border); color: var(--text-muted);" onclick="fermerModal('BNC')">Annuler</button>
                 <button class="btn-api" style="flex:1;" onclick="genererLettre('BNC')">Générer PDF</button>
@@ -710,7 +726,7 @@
             <div class="input-group">
                 <label>Signataire</label>
                 <select id="confrereSignataire">
-                    <option value="Lucie DESBLANCS|Expert-comptable D.P.L.E.">Lucie DESBLANCS</option>
+                    <option value="Lucie DESBLANCS|Expert-comptable">Lucie DESBLANCS</option>
                     <option value="Florent DESBLANCS|Expert-comptable D.P.L.E.">Florent DESBLANCS</option>
                 </select>
             </div>
@@ -1134,13 +1150,14 @@
             'irSocietes', 'nombreBiensSocietes', 'infoMensuelSocietes', 'infoCommentaireSocietes',
             'tauxChancellerieSocietes', 'capitalSocietes', 'dateCreationSocietes', 'formeJuridiqueSocietes',
             'adresseSocietes', 'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
-            'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes'
+            'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes',
+            'signataireSocietes'
         ];
         const champsBNC = [
             'siretBNC', 'nomDossierBNC', 'caClientBNC', 'nbSalariesBNC', 'tarifBulletinBNC',
             'irBNC', 'nombreBiensBNC', 'infoMensuelBNC', 'infoCommentaireBNC', 'tauxChancellerieBNC',
             'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'dateDebutMissionBNC',
-            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC'
+            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC', 'signataireBNC'
         ];
 
         function collecterDossier(type) {
@@ -1381,6 +1398,7 @@
             data.activite = document.getElementById('activitePrecise' + suffix).value;
             data.date_debut = document.getElementById('dateDebutMission' + suffix).value;
             data.date_fin = document.getElementById('dateFinExercice' + suffix).value;
+            data.signataire_cabinet = document.getElementById('signataire' + suffix).value;
             
             // Gestion des champs Informatique
             const infoAnnuel = (parseFloat(document.getElementById('infoMensuel' + suffix).value)||0) * 12;

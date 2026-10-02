@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Résiliation de Mission</title>
+    <script src="export-word.js"></script>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -109,10 +110,6 @@
             clone.querySelectorAll('.no-print').forEach(el => el.remove());
             clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
             clone.removeAttribute('contenteditable');
-            // Adresse absolue des images pour que Word puisse les afficher
-            clone.querySelectorAll('img').forEach(img => {
-                img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
-            });
             // En-tête : Word ne gère pas flex, on le transforme en tableau
             const entete = clone.querySelector('.page-header');
             if (entete) {
@@ -124,14 +121,7 @@
                     + (img ? img.outerHTML : '') + '</td></tr></table>';
             }
 
-            const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-                + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
-                + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
-            const blob = new Blob(['﻿', html], { type: 'application/msword' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = nomFichier + '.doc';
-            link.click();
+            exporterWord(clone, nomFichier, cssWord);
         }
 
         const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; } .sender-block { margin-bottom: 30pt; } .sender-name, .recipient-name { font-weight: bold; text-transform: uppercase; } .recipient-block, .recipient-block div { text-align: right; } .lieu-date { text-align: right; margin: 20pt 0 6pt 0; } .reference { font-size: 10pt; margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } ul.motifs li { text-align: justify; margin-bottom: 6pt; } .signature-block, .signature-block div { text-align: right; } .signature-block { margin-top: 36pt; } .signature-name { font-weight: bold; }`;
