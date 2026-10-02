@@ -841,8 +841,8 @@
 </head>
 <body contenteditable="true" spellcheck="false">
 <div contenteditable="false" class="no-print" style="position:fixed; top:20px; right:20px; z-index:9999; display:flex; gap:10px;">
-        <button onclick="sauvegarderFichier()" style="background:#fff; color:#1a4d2e; border:2px solid #1a4d2e; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
-            💾 Sauvegarder
+        <button onclick="telechargerWord()" style="background:#fff; color:#2b579a; border:2px solid #2b579a; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
+            📝 Word modifiable
         </button>
         
         <button onclick="window.print()" style="background:#1a4d2e; color:white; border:2px solid #1a4d2e; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
@@ -1968,31 +1968,93 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
     </div>
 
 <script>
-    // 1. FONCTION DE SAUVEGARDE (Avec date automatique)
-    function sauvegarderFichier() {
+    // 1. EXPORT WORD (.doc) : lettre de mission modifiable après génération
+    // Word ne gère pas display:flex : les lignes en flex sont converties en tableaux
+    function ligneEnTableau(el, largeurs) {
+        const table = document.createElement('table');
+        table.className = 'word-row ' + el.className;
+        table.setAttribute('width', '100%');
+        const fond = el.style.backgroundColor;
+        const tr = table.insertRow();
+        Array.from(el.children).forEach((enfant, i) => {
+            const td = tr.insertCell();
+            td.className = enfant.className;
+            td.innerHTML = enfant.innerHTML;
+            td.setAttribute('style', enfant.getAttribute('style') || '');
+            if (fond) td.style.backgroundColor = fond;
+            if (largeurs && largeurs[i]) td.setAttribute('width', largeurs[i]);
+            if (enfant.style.textAlign === 'right' || enfant.classList.contains('tariff-price')) td.setAttribute('align', 'right');
+            td.style.verticalAlign = 'top';
+        });
+        el.replaceWith(table);
+    }
+
+    function telechargerWord() {
         const nomClient = localStorage.getItem('nom_client') || 'Client';
-        
-        const dateObj = new Date();
-        const jour = String(dateObj.getDate()).padStart(2, '0');
-        const mois = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const annee = dateObj.getFullYear();
-        const dateDuJour = jour + mois + annee;
+        const d = new Date();
+        const dateDuJour = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + d.getFullYear();
+        const nomFichier = prompt("Nom du fichier Word :", "Lettre_Mission_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour);
+        if (!nomFichier) return;
 
-        const nomFichierParDefaut = "Lettre_Mission_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour;
-        const nomFichier = prompt("Nom du fichier à sauvegarder :", nomFichierParDefaut);
-        
-        if (nomFichier) {
-            const clone = document.documentElement.cloneNode(true);
-            const boutons = clone.querySelector('.no-print');
-            if(boutons) boutons.remove();
+        const clone = document.body.cloneNode(true);
+        clone.querySelectorAll('.no-print, script').forEach(el => el.remove());
+        clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+        clone.removeAttribute('contenteditable');
+        // Adresse absolue des images pour que Word puisse les afficher
+        clone.querySelectorAll('img').forEach(img => {
+            img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
+        });
 
-            const htmlContent = "<!DOCTYPE html>" + clone.outerHTML;
-            const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = nomFichier + ".html";
-            link.click();
+        const entete = clone.querySelector('.page-header');
+        if (entete) {
+            const img = entete.querySelector('img');
+            if (img) img.setAttribute('height', '48');
+            ligneEnTableau(entete, ['70%', '30%']);
         }
+        clone.querySelectorAll('.tariff-row').forEach(el => ligneEnTableau(el, [null, '150']));
+        clone.querySelectorAll('.description-item').forEach(el => ligneEnTableau(el, ['200', null]));
+        clone.querySelectorAll('.signature-section').forEach(el => ligneEnTableau(el, ['50%', '50%']));
+
+        const cssWord = `
+            @page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm; }
+            div.WordSection1 { page: WordSection1; }
+            body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 10pt; color: #333; }
+            h1 { color: #1a4d2e; font-size: 20pt; margin: 6pt 0; }
+            h2 { color: #1a4d2e; font-size: 14pt; border-bottom: 1px solid #ddd; margin: 18pt 0 8pt 0; }
+            h3 { color: #1a4d2e; font-size: 12pt; margin: 12pt 0 6pt 0; }
+            p { text-align: justify; margin: 0 0 8pt 0; }
+            li { text-align: justify; margin-bottom: 4pt; }
+            table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 9pt; }
+            th { background-color: #1a4d2e; color: white; padding: 4pt; text-align: left; font-weight: bold; }
+            td { border: 1px solid #ddd; padding: 4pt; }
+            table.word-row { margin: 0; font-size: 10pt; }
+            table.word-row td { border: none; }
+            table.tariff-row td { border-bottom: 1px solid #ddd; padding: 6pt 4pt; }
+            table.page-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 18pt; }
+            .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; }
+            .header-profession { font-size: 10pt; color: #1a4d2e; }
+            header { border-bottom: 2px solid #1a4d2e; margin-bottom: 12pt; }
+            .header-date, .header-recipient { font-weight: bold; text-align: right; }
+            .description-label { font-weight: bold; color: #1a4d2e; background-color: #f9f9f9; }
+            .description-value { background-color: #f9f9f9; }
+            .mission-section { border-left: 3px solid #1a4d2e; padding-left: 8pt; margin-bottom: 12pt; }
+            .mission-title, .condition-title { font-weight: bold; color: #1a4d2e; margin-bottom: 4pt; }
+            .tariff-price { font-weight: bold; color: #1a4d2e; }
+            .conditions-section { background-color: #f0f8f0; padding: 8pt; margin-top: 12pt; font-size: 9pt; }
+            .note { font-style: italic; color: #666; background-color: #fffacd; border-left: 3px solid #daa520; padding: 4pt; }
+            .signature-line { border-top: 1px solid #333; margin-top: 30pt; padding-top: 4pt; font-weight: bold; }
+            .page-footer { border-top: 1px solid #1a4d2e; margin-top: 24pt; padding-top: 6pt; }
+            .footer-line { text-align: center; margin: 0; font-size: 9pt; }
+        `;
+
+        const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+            + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
+            + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
+        const blob = new Blob(['﻿', html], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = nomFichier + '.doc';
+        link.click();
     }
 
     // 2. UTILITAIRES DE FORMATAGE
