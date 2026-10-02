@@ -82,7 +82,8 @@ function construireEntetePied(clone) {
         + '<body>' + htmlEntete + htmlPied + '</body></html>';
 }
 
-async function exporterWord(clone, nomFichier, cssWord) {
+// options.enteteWord : en-tête et pied de page placés dans ceux de Word (utilisé par le courrier confrère)
+async function exporterWord(clone, nomFichier, cssWord, options = {}) {
     const images = [];
     const balisesImg = Array.from(clone.querySelectorAll('img'));
     for (let i = 0; i < balisesImg.length; i++) {
@@ -101,7 +102,7 @@ async function exporterWord(clone, nomFichier, cssWord) {
 
     // En-tête et pied de page placés dans les vrais en-tête / pied de page Word
     // (répétés sur chaque page, pied collé en bas de page)
-    const entetePied = construireEntetePied(clone);
+    const entetePied = options.enteteWord ? construireEntetePied(clone) : null;
     const emplacementEntetePied = 'file:///C:/document/header.htm';
     if (entetePied) {
         cssWord = cssWord.replace('@page WordSection1 {',

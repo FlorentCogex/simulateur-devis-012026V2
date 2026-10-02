@@ -159,7 +159,7 @@
             clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
             clone.removeAttribute('contenteditable');
 
-            exporterWord(clone, nomFichier, cssWord);
+            exporterWord(clone, nomFichier, cssWord, { enteteWord: true });
         }
 
         const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 3.4cm 2cm 3cm 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-top: 26pt; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;
