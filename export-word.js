@@ -38,6 +38,48 @@ function decouperBase64(base64) {
     return base64.match(/.{1,76}/g).join('\r\n');
 }
 
+// Retire .page-header / .page-footer du corps et renvoie leur version Word
+// (blocs mso-element:header / footer, rangés dans un tableau hors page), ou null s'il n'y en a pas
+function construireEntetePied(clone) {
+    const entete = clone.querySelector('.page-header');
+    const pied = clone.querySelector('.page-footer');
+    if (!entete && !pied) return null;
+    const vert = '#1A4D2E';
+    const police = "font-family:'Bahnschrift Light','Segoe UI',sans-serif;";
+    const filet = 'border:none;border-bottom:solid ' + vert + ' 1.0pt;mso-border-bottom-alt:solid ' + vert + ' .75pt;padding:0 0 5pt 0;';
+
+    let htmlEntete = '';
+    if (entete) {
+        const nom = (entete.querySelector('.header-company-name') || {}).textContent || '';
+        const profession = (entete.querySelector('.header-profession') || {}).textContent || '';
+        const img = entete.querySelector('img');
+        htmlEntete = '<div style="mso-element:header" id="h1">'
+            + '<table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;border:none;mso-border-alt:none;mso-padding-alt:0 0 0 0;">'
+            + '<tr><td width="65%" valign="bottom" style="width:65%;' + filet + '">'
+            + '<p class="MsoHeader" style="margin:0;line-height:normal;"><b><span style="' + police + 'font-size:13pt;color:' + vert + ';">' + nom.trim() + '</span></b></p>'
+            + '<p class="MsoHeader" style="margin:2pt 0 0 0;line-height:normal;"><span style="' + police + 'font-size:10.5pt;color:' + vert + ';">' + profession.trim() + '</span></p>'
+            + '</td><td width="35%" valign="bottom" align="right" style="width:35%;' + filet + '">'
+            + '<p class="MsoHeader" align="right" style="margin:0;text-align:right;line-height:normal;">' + (img ? img.outerHTML : '') + '</p>'
+            + '</td></tr></table>'
+            + '<p class="MsoHeader" style="margin:0;font-size:4pt;">&nbsp;</p>'
+            + '</div>';
+        entete.remove();
+    }
+
+    let htmlPied = '';
+    if (pied) {
+        const lignes = Array.from(pied.querySelectorAll('.footer-line')).map(l => l.textContent.trim());
+        htmlPied = '<div style="mso-element:footer" id="f1">'
+            + '<p class="MsoFooter" align="center" style="margin:0;text-align:center;line-height:normal;border:none;border-top:solid ' + vert + ' 1.0pt;mso-border-top-alt:solid ' + vert + ' .75pt;padding:4pt 0 0 0;">'
+            + '<span style="' + police + 'font-size:8.5pt;color:#333333;">' + lignes.join('<br>') + '</span></p>'
+            + '</div>';
+        pied.remove();
+    }
+
+    return '<table id="entetePied" border="0" cellspacing="0" cellpadding="0"><tr><td>'
+        + htmlEntete + '</td><td>' + htmlPied + '</td></tr></table>';
+}
+
 async function exporterWord(clone, nomFichier, cssWord) {
     const images = [];
     const balisesImg = Array.from(clone.querySelectorAll('img'));
@@ -55,9 +97,18 @@ async function exporterWord(clone, nomFichier, cssWord) {
         images.push({ emplacement, base64: donnees.base64 });
     }
 
+    // En-tête et pied de page placés dans les vrais en-tête / pied de page Word
+    // (répétés sur chaque page, pied collé en bas de page)
+    const entetePied = construireEntetePied(clone);
+    if (entetePied) {
+        cssWord = cssWord.replace('@page WordSection1 {',
+            '@page WordSection1 { mso-header-margin: 1cm; mso-footer-margin: 0.8cm; mso-header: h1; mso-footer: f1;');
+        cssWord += ' table#entetePied { margin: 0 0 0 50cm; } p.MsoHeader, p.MsoFooter { margin: 0; }';
+    }
+
     const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
         + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
-        + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
+        + '<body><div class="WordSection1">' + clone.innerHTML + (entetePied || '') + '</div></body></html>';
 
     const limite = '----=_Part_' + Date.now();
     let mhtml = 'MIME-Version: 1.0\r\n'

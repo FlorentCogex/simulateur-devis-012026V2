@@ -713,13 +713,13 @@
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Les informations du client (nom, dirigeant, date de début de mission) sont reprises automatiquement depuis le dossier en cours.</p>
             <div class="form-grid-2">
                 <div class="input-group">
-                    <label>Civilité</label>
-                    <select id="confrereCivilite">
-                        <option value="Cher Confrère">M. (Cher Confrère)</option>
-                        <option value="Chère Consœur">Mme (Chère Consœur)</option>
+                    <label>Écrire à</label>
+                    <select id="confrereCivilite" onchange="majLibelleConfrere()">
+                        <option value="Cher Confrère">Un confrère (Cher Confrère)</option>
+                        <option value="Chère Consœur">Une consœur (Chère Consœur)</option>
                     </select>
                 </div>
-                <div class="input-group"><label>Nom du Confrère</label><input type="text" id="confrereNom" placeholder="Ex: Edwige JACOB"></div>
+                <div class="input-group"><label id="labelConfrereNom">Nom du confrère</label><input type="text" id="confrereNom" placeholder="Ex: Edwige JACOB"></div>
             </div>
             <div class="input-group"><label>Cabinet</label><input type="text" id="confrereCabinet" placeholder="Ex: CABINET EPHISENS"></div>
             <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="Ex: Micropolis – Belle Aureille, 05000 GAP"></div>
@@ -727,7 +727,7 @@
                 <label>Signataire</label>
                 <select id="confrereSignataire">
                     <option value="Lucie DESBLANCS|Expert-comptable">Lucie DESBLANCS</option>
-                    <option value="Florent DESBLANCS|Expert-comptable D.P.L.E.">Florent DESBLANCS</option>
+                    <option value="Florent DESBLANCS|Expert-comptable">Florent DESBLANCS</option>
                 </select>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
@@ -1294,10 +1294,15 @@
             ouvrirModal('Confrere');
         }
 
+        function majLibelleConfrere() {
+            const consoeur = document.getElementById('confrereCivilite').value === 'Chère Consœur';
+            document.getElementById('labelConfrereNom').textContent = consoeur ? 'Nom de la consœur' : 'Nom du confrère';
+        }
+
         function genererCourrierConfrere() {
             const nom = document.getElementById('confrereNom').value.trim();
             const cabinet = document.getElementById('confrereCabinet').value.trim();
-            if(!nom || !cabinet) { alert('Merci de renseigner le nom du confrère et le cabinet.'); return; }
+            if(!nom || !cabinet) { alert('Merci de renseigner le nom du confrère ou de la consœur et le cabinet.'); return; }
 
             const suffix = typeConfrereActuel;
             const civilite = document.getElementById('confrereCivilite').value;

@@ -1945,18 +1945,12 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
         clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
         clone.removeAttribute('contenteditable');
 
-        const entete = clone.querySelector('.page-header');
-        if (entete) {
-            const img = entete.querySelector('img');
-            if (img) img.setAttribute('height', '48');
-            ligneEnTableau(entete, ['70%', '30%']);
-        }
         clone.querySelectorAll('.tariff-row').forEach(el => ligneEnTableau(el, [null, '150']));
         clone.querySelectorAll('.description-item').forEach(el => ligneEnTableau(el, ['200', null]));
         clone.querySelectorAll('.signature-section').forEach(el => ligneEnTableau(el, ['50%', '50%']));
 
         const cssWord = `
-            @page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm; }
+            @page WordSection1 { size: 21cm 29.7cm; margin: 3.4cm 1.5cm 3cm 1.5cm; }
             div.WordSection1 { page: WordSection1; }
             body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 10pt; color: #333; }
             h1 { color: #1a4d2e; font-size: 20pt; margin: 6pt 0; }

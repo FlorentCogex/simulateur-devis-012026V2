@@ -58,7 +58,7 @@
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .lieu-date { text-align: right; margin-bottom: 40px; font-weight: bold; }
+    .lieu-date { text-align: right; margin-top: 3.2em; margin-bottom: 40px; font-weight: bold; }
 
     .recipient-block { margin-bottom: 40px; }
     .recipient-block div { line-height: 1.4; }
@@ -158,21 +158,11 @@
             clone.querySelectorAll('.no-print').forEach(el => el.remove());
             clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
             clone.removeAttribute('contenteditable');
-            // En-tête : Word ne gère pas flex, on le transforme en tableau
-            const entete = clone.querySelector('.page-header');
-            if (entete) {
-                const gauche = entete.querySelector('.header-left');
-                const img = entete.querySelector('img');
-                if (img) img.setAttribute('height', '48');
-                entete.outerHTML = '<table class="word-header" width="100%"><tr><td class="word-header-left">'
-                    + (gauche ? gauche.innerHTML : '') + '</td><td class="word-header-right" align="right">'
-                    + (img ? img.outerHTML : '') + '</td></tr></table>';
-            }
 
             exporterWord(clone, nomFichier, cssWord);
         }
 
-        const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;
+        const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 3.4cm 2cm 3cm 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-top: 26pt; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;
 
         window.addEventListener('load', function() {
             setTimeout(function() {
