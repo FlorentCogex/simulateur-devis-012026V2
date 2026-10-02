@@ -26,6 +26,7 @@
     }
     .btn-save { background: #fff; color: #333; }
     .btn-print { background: #333; color: white; }
+    .no-print .btn-word { background: #fff; color: #2b579a; border-color: #2b579a; }
 
     .container {
         max-width: 800px;
@@ -96,6 +97,45 @@
             }
         }
 
+        // Export Word (.doc) : document modifiable après génération
+        function telechargerWord(prefixeNom, cleNomClient, cssWord) {
+            const nomClient = localStorage.getItem(cleNomClient) || 'Client';
+            const d = new Date();
+            const dateDuJour = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + d.getFullYear();
+            const nomFichier = prompt("Nom du fichier Word :", prefixeNom + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour);
+            if (!nomFichier) return;
+
+            const clone = document.body.cloneNode(true);
+            clone.querySelectorAll('.no-print').forEach(el => el.remove());
+            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+            clone.removeAttribute('contenteditable');
+            // Adresse absolue des images pour que Word puisse les afficher
+            clone.querySelectorAll('img').forEach(img => {
+                img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
+            });
+            // En-tête : Word ne gère pas flex, on le transforme en tableau
+            const entete = clone.querySelector('.page-header');
+            if (entete) {
+                const gauche = entete.querySelector('.header-left');
+                const img = entete.querySelector('img');
+                if (img) img.setAttribute('height', '48');
+                entete.outerHTML = '<table class="word-header" width="100%"><tr><td class="word-header-left">'
+                    + (gauche ? gauche.innerHTML : '') + '</td><td class="word-header-right" align="right">'
+                    + (img ? img.outerHTML : '') + '</td></tr></table>';
+            }
+
+            const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+                + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
+                + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
+            const blob = new Blob(['﻿', html], { type: 'application/msword' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = nomFichier + '.doc';
+            link.click();
+        }
+
+        const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; } .sender-block { margin-bottom: 30pt; } .sender-name, .recipient-name { font-weight: bold; text-transform: uppercase; } .recipient-block, .recipient-block div { text-align: right; } .lieu-date { text-align: right; margin: 20pt 0 6pt 0; } .reference { font-size: 10pt; margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } ul.motifs li { text-align: justify; margin-bottom: 6pt; } .signature-block, .signature-block div { text-align: right; } .signature-block { margin-top: 36pt; } .signature-name { font-weight: bold; }`;
+
         window.addEventListener('load', function() {
             setTimeout(function() {
                 let html = document.body.innerHTML;
@@ -131,9 +171,10 @@
         });
     </script>
 </head>
-<body>
-    <div class="no-print">
+<body contenteditable="true" spellcheck="false">
+    <div class="no-print" contenteditable="false">
         <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
+        <button class="btn-word" onclick="telechargerWord('Lettre_Resiliation_', 'rupture_client_nom', CSS_WORD)">📝 Word modifiable</button>
         <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
 

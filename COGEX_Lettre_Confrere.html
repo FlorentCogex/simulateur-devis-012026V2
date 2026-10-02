@@ -31,6 +31,7 @@
     }
     .btn-save { background: #fff; color: #1a4d2e; }
     .btn-print { background: #1a4d2e; color: white; }
+    .no-print .btn-word { background: #fff; color: #2b579a; border-color: #2b579a; }
 
     .page-header {
         display: none;
@@ -76,6 +77,8 @@
         color: #333;
         line-height: 1.1;
     }
+    .footer-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    .footer-left { text-align: center; }
     .footer-line { margin-bottom: 2px; }
 
     @media print {
@@ -94,10 +97,18 @@
         .header-left, .header-right { display: inline-block; vertical-align: top; }
         .header-left { width: 70%; }
         .header-right { width: 28%; text-align: right; }
+        .header-company-name { font-size: 16px; font-weight: bold; color: #1a4d2e; margin-bottom: 3px; }
+        .header-profession { font-size: 13px; color: #1a4d2e; }
+        .header-right img { height: 48px; object-fit: contain; }
 
         .container { max-width: 100%; padding: 0 10mm; box-shadow: none; }
 
-        .page-footer { display: block !important; margin-top: 1.5cm; }
+        .page-footer {
+            display: block !important; width: 100%; position: static !important;
+            border-top: 1px solid #1a4d2e; padding: 0.5cm 0; margin-top: 2em;
+            background-color: white; text-align: center; page-break-inside: avoid;
+        }
+        .footer-line { margin: 1px 0; font-size: 13px; }
     }
 </style>
 
@@ -134,6 +145,45 @@
             }
         }
 
+        // Export Word (.doc) : document modifiable après génération
+        function telechargerWord(prefixeNom, cleNomClient, cssWord) {
+            const nomClient = localStorage.getItem(cleNomClient) || 'Client';
+            const d = new Date();
+            const dateDuJour = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + d.getFullYear();
+            const nomFichier = prompt("Nom du fichier Word :", prefixeNom + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour);
+            if (!nomFichier) return;
+
+            const clone = document.body.cloneNode(true);
+            clone.querySelectorAll('.no-print').forEach(el => el.remove());
+            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+            clone.removeAttribute('contenteditable');
+            // Adresse absolue des images pour que Word puisse les afficher
+            clone.querySelectorAll('img').forEach(img => {
+                img.setAttribute('src', new URL(img.getAttribute('src'), document.baseURI).href);
+            });
+            // En-tête : Word ne gère pas flex, on le transforme en tableau
+            const entete = clone.querySelector('.page-header');
+            if (entete) {
+                const gauche = entete.querySelector('.header-left');
+                const img = entete.querySelector('img');
+                if (img) img.setAttribute('height', '48');
+                entete.outerHTML = '<table class="word-header" width="100%"><tr><td class="word-header-left">'
+                    + (gauche ? gauche.innerHTML : '') + '</td><td class="word-header-right" align="right">'
+                    + (img ? img.outerHTML : '') + '</td></tr></table>';
+            }
+
+            const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+                + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
+                + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
+            const blob = new Blob(['﻿', html], { type: 'application/msword' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = nomFichier + '.doc';
+            link.click();
+        }
+
+        const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;
+
         window.addEventListener('load', function() {
             setTimeout(function() {
                 let html = document.body.innerHTML;
@@ -155,9 +205,10 @@
         });
     </script>
 </head>
-<body>
-    <div class="no-print">
+<body contenteditable="true" spellcheck="false">
+    <div class="no-print" contenteditable="false">
         <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
+        <button class="btn-word" onclick="telechargerWord('Lettre_Confrere_', 'confrere_client_nom', CSS_WORD)">📝 Word modifiable</button>
         <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
 
@@ -199,10 +250,14 @@
     </div>
 
     <div class="page-footer">
-        <div class="footer-line">Bd Ange Delestrade – Résidence Centre Sud 2 – Bt C</div>
-        <div class="footer-line">13380 Plan de Cuques</div>
-        <div class="footer-line">Siret 434 115 002 00041 APE 6920Z</div>
-        <div class="footer-line">07 70 02 86 66 – lucie.desblancs@cabinet-cogex.fr</div>
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-line">Bd Ange Delestrade – Résidence Centre Sud 2 – Bt C</div>
+                <div class="footer-line">13380 Plan de Cuques</div>
+                <div class="footer-line">Siret 434 115 002 00041 APE 6920Z</div>
+                <div class="footer-line">07 70 02 86 66 – lucie.desblancs@cabinet-cogex.fr</div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
