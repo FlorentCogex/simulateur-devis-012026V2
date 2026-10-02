@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courrier Confraternel - Cabinet Cogex</title>
     <script src="export-word.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <style>
     @font-face {
         font-family: 'Bahnschrift Light';
@@ -146,23 +147,115 @@
             }
         }
 
-        // Export Word (.doc) : document modifiable après génération
-        function telechargerWord(prefixeNom, cleNomClient, cssWord) {
-            const nomClient = localStorage.getItem(cleNomClient) || 'Client';
+        // Export Word (.docx) : vrai document Word construit élément par élément
+        // (en-tête et pied de page Word, tableau sans bordures, logo intégré)
+        async function telechargerWord() {
+            const nomClient = localStorage.getItem('confrere_client_nom') || 'Client';
             const d = new Date();
             const dateDuJour = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + d.getFullYear();
-            const nomFichier = prompt("Nom du fichier Word :", prefixeNom + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour);
+            const nomFichier = prompt("Nom du fichier Word :", "Lettre_Confrere_" + nomClient.replace(/[^a-zA-Z0-9]/g, '_') + "_" + dateDuJour);
             if (!nomFichier) return;
 
-            const clone = document.body.cloneNode(true);
-            clone.querySelectorAll('.no-print').forEach(el => el.remove());
-            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-            clone.removeAttribute('contenteditable');
+            const { Document, Packer, Paragraph, TextRun, ImageRun, Header, Footer, Table, TableRow, TableCell,
+                    WidthType, BorderStyle, AlignmentType, VerticalAlign } = docx;
+            const VERT = '1A4D2E';
+            const POLICE = 'Bahnschrift Light';
+            const cm = v => Math.round(v * 567);
+            const aucun = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+            const filet = { style: BorderStyle.SINGLE, size: 8, color: VERT };
 
-            exporterWord(clone, nomFichier, cssWord, { enteteWord: true });
+            // Texte (avec retours à la ligne) d'un élément du courrier, tel que modifié à l'écran
+            const runs = (el, opts = {}) => el.innerText.trim().split('\n')
+                .map((ligne, i) => new TextRun({ text: ligne, break: i > 0 ? 1 : 0, ...opts }));
+
+            // --- En-tête ---
+            const logo = await imageEnBase64(new URL('logo-cogex.jpg', document.baseURI).href, 48 * 4, 'image/png');
+            const celluleLogo = logo ? [new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                children: [new ImageRun({
+                    data: Uint8Array.from(atob(logo.base64), c => c.charCodeAt(0)),
+                    transformation: { width: Math.round(48 * logo.largeur / logo.hauteur), height: 48 }
+                })]
+            })] : [new Paragraph('')];
+            const bordureCellule = { top: aucun, left: aucun, right: aucun, bottom: filet };
+            const entete = new Header({ children: [
+                new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    borders: { top: aucun, bottom: aucun, left: aucun, right: aucun, insideHorizontal: aucun, insideVertical: aucun },
+                    rows: [new TableRow({ children: [
+                        new TableCell({
+                            width: { size: 65, type: WidthType.PERCENTAGE },
+                            verticalAlign: VerticalAlign.BOTTOM,
+                            borders: bordureCellule,
+                            margins: { bottom: 100 },
+                            children: [
+                                new Paragraph({ children: [new TextRun({ text: 'Lucie DESBLANCS & Florent DESBLANCS', bold: true, size: 26, color: VERT })] }),
+                                new Paragraph({ spacing: { before: 40 }, children: [new TextRun({ text: 'Experts-comptables', size: 21, color: VERT })] })
+                            ]
+                        }),
+                        new TableCell({
+                            width: { size: 35, type: WidthType.PERCENTAGE },
+                            verticalAlign: VerticalAlign.BOTTOM,
+                            borders: bordureCellule,
+                            margins: { bottom: 100 },
+                            children: celluleLogo
+                        })
+                    ] })]
+                }),
+                new Paragraph({ spacing: { after: 0 }, children: [] })
+            ] });
+
+            // --- Pied de page ---
+            const lignesPied = Array.from(document.querySelectorAll('.page-footer .footer-line')).map(l => l.textContent.trim());
+            const pied = new Footer({ children: [new Paragraph({
+                alignment: AlignmentType.CENTER,
+                border: { top: { style: BorderStyle.SINGLE, size: 6, color: VERT, space: 6 } },
+                children: lignesPied.map((ligne, i) => new TextRun({ text: ligne, break: i > 0 ? 1 : 0, size: 17, color: '333333' }))
+            })] });
+
+            // --- Corps du courrier ---
+            const corps = [];
+            document.querySelectorAll('.container > *').forEach(el => {
+                if (el.classList.contains('lieu-date')) {
+                    corps.push(new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { before: 520, after: 600 }, children: runs(el, { bold: true }) }));
+                } else if (el.classList.contains('recipient-block')) {
+                    const lignes = Array.from(el.children).filter(l => l.innerText.trim());
+                    lignes.forEach((l, i) => corps.push(new Paragraph({
+                        spacing: { after: i === lignes.length - 1 ? 600 : 0 },
+                        children: runs(l, { bold: l.classList.contains('recipient-name') })
+                    })));
+                } else if (el.classList.contains('objet')) {
+                    corps.push(new Paragraph({ spacing: { after: 400 }, children: runs(el, { bold: true }) }));
+                } else if (el.classList.contains('signature-block')) {
+                    Array.from(el.children).forEach((l, i) => corps.push(new Paragraph({
+                        alignment: AlignmentType.RIGHT,
+                        spacing: { before: i === 0 ? 720 : 0 },
+                        children: runs(l, { bold: l.classList.contains('signature-name') })
+                    })));
+                } else if (el.innerText.trim()) {
+                    corps.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 240 }, children: runs(el) }));
+                }
+            });
+
+            const doc = new Document({
+                styles: { default: { document: { run: { font: POLICE, size: 22, color: '333333' }, paragraph: { spacing: { line: 276 } } } } },
+                sections: [{
+                    properties: { page: {
+                        size: { width: cm(21), height: cm(29.7) },
+                        margin: { top: cm(3.6), bottom: cm(3), left: cm(2), right: cm(2), header: cm(1), footer: cm(0.8) }
+                    } },
+                    headers: { default: entete },
+                    footers: { default: pied },
+                    children: corps
+                }]
+            });
+
+            const blob = await Packer.toBlob(doc);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = nomFichier + '.docx';
+            link.click();
         }
-
-        const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 3.4cm 2cm 3cm 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif; font-size: 11pt; color: #333; } table.word-header { border-bottom: 1px solid #1a4d2e; margin-bottom: 1cm; } .word-header-left, .word-header-right { vertical-align: top; } .word-header-right { text-align: right; } .header-company-name { font-size: 12pt; font-weight: bold; color: #1a4d2e; } .header-profession { font-size: 10pt; color: #1a4d2e; } .lieu-date { text-align: right; font-weight: bold; margin-top: 26pt; margin-bottom: 30pt; } .recipient-block { margin-bottom: 30pt; } .recipient-name, .objet, .signature-name { font-weight: bold; } .objet { margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } .signature-block, .signature-block div { margin-top: 0; text-align: right; } .signature-block { margin-top: 36pt; } .page-footer { border-top: 1px solid #1a4d2e; margin-top: 36pt; padding-top: 6pt; } .footer-line { text-align: center; margin: 0; font-size: 9pt; }`;
 
         window.addEventListener('load', function() {
             setTimeout(function() {
@@ -188,7 +281,7 @@
 <body contenteditable="true" spellcheck="false">
     <div class="no-print" contenteditable="false">
         <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
-        <button class="btn-word" onclick="telechargerWord('Lettre_Confrere_', 'confrere_client_nom', CSS_WORD)">📝 Word modifiable</button>
+        <button class="btn-word" onclick="telechargerWord()">📝 Word modifiable</button>
         <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
 
