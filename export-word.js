@@ -38,8 +38,9 @@ function decouperBase64(base64) {
     return base64.match(/.{1,76}/g).join('\r\n');
 }
 
-// Retire .page-header / .page-footer du corps et renvoie leur version Word
-// (blocs mso-element:header / footer, rangés dans un tableau hors page), ou null s'il n'y en a pas
+// Retire .page-header / .page-footer du corps et renvoie leur version Word : une page HTML
+// séparée contenant les blocs mso-element:header / footer (comme Word l'enregistre lui-même),
+// ou null s'il n'y en a pas
 function construireEntetePied(clone) {
     const entete = clone.querySelector('.page-header');
     const pied = clone.querySelector('.page-footer');
@@ -61,7 +62,7 @@ function construireEntetePied(clone) {
             + '</td><td width="35%" valign="bottom" align="right" style="width:35%;' + filet + '">'
             + '<p class="MsoHeader" align="right" style="margin:0;text-align:right;line-height:normal;">' + (img ? img.outerHTML : '') + '</p>'
             + '</td></tr></table>'
-            + '<p class="MsoHeader" style="margin:0;font-size:4pt;">&nbsp;</p>'
+            + '<p class="MsoHeader" style="margin:0;line-height:4pt;mso-line-height-rule:exactly;"><span style="font-size:4pt;"></span></p>'
             + '</div>';
         entete.remove();
     }
@@ -76,8 +77,9 @@ function construireEntetePied(clone) {
         pied.remove();
     }
 
-    return '<table id="entetePied" border="0" cellspacing="0" cellpadding="0"><tr><td>'
-        + htmlEntete + '</td><td>' + htmlPied + '</td></tr></table>';
+    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+        + '<head><meta charset="utf-8"><link id="Main-File" rel="Main-File" href="file:///C:/document/document.htm"></head>'
+        + '<body>' + htmlEntete + htmlPied + '</body></html>';
 }
 
 async function exporterWord(clone, nomFichier, cssWord) {
@@ -100,15 +102,17 @@ async function exporterWord(clone, nomFichier, cssWord) {
     // En-tête et pied de page placés dans les vrais en-tête / pied de page Word
     // (répétés sur chaque page, pied collé en bas de page)
     const entetePied = construireEntetePied(clone);
+    const emplacementEntetePied = 'file:///C:/document/header.htm';
     if (entetePied) {
         cssWord = cssWord.replace('@page WordSection1 {',
-            '@page WordSection1 { mso-header-margin: 1cm; mso-footer-margin: 0.8cm; mso-header: h1; mso-footer: f1;');
-        cssWord += ' table#entetePied { margin: 0 0 0 50cm; } p.MsoHeader, p.MsoFooter { margin: 0; }';
+            '@page WordSection1 { mso-header-margin: 1cm; mso-footer-margin: 0.8cm;'
+            + ' mso-header: url("' + emplacementEntetePied + '") h1; mso-footer: url("' + emplacementEntetePied + '") f1;');
+        cssWord += ' p.MsoHeader, p.MsoFooter { margin: 0; }';
     }
 
     const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
         + '<head><meta charset="utf-8"><title>' + nomFichier + '</title><style>' + cssWord + '</style></head>'
-        + '<body><div class="WordSection1">' + clone.innerHTML + (entetePied || '') + '</div></body></html>';
+        + '<body><div class="WordSection1">' + clone.innerHTML + '</div></body></html>';
 
     const limite = '----=_Part_' + Date.now();
     let mhtml = 'MIME-Version: 1.0\r\n'
@@ -118,6 +122,13 @@ async function exporterWord(clone, nomFichier, cssWord) {
         + 'Content-Transfer-Encoding: base64\r\n'
         + 'Content-Location: file:///C:/document/document.htm\r\n\r\n'
         + decouperBase64(utf8EnBase64(html)) + '\r\n';
+    if (entetePied) {
+        mhtml += '--' + limite + '\r\n'
+            + 'Content-Type: text/html; charset="utf-8"\r\n'
+            + 'Content-Transfer-Encoding: base64\r\n'
+            + 'Content-Location: ' + emplacementEntetePied + '\r\n\r\n'
+            + decouperBase64(utf8EnBase64(entetePied)) + '\r\n';
+    }
     images.forEach(image => {
         mhtml += '--' + limite + '\r\n'
             + 'Content-Type: image/jpeg\r\n'
