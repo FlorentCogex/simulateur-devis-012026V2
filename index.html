@@ -229,6 +229,7 @@
             display: flex; justify-content: space-between; align-items: flex-end;
         }
         .ticket-total .value { font-size: 2.2rem; color: var(--accent); line-height: 1; }
+        .ticket-mensuel { text-align: right; color: var(--text-muted); font-size: 0.8rem; margin-top: 6px; }
 
         .btn-generate {
             width: 100%; background: var(--accent); color: var(--bg-deep); border: none;
@@ -477,6 +478,7 @@
                         <span>TOTAL ANNUEL</span>
                         <span class="value" id="totalAnnuelSocietes">0,00 €</span>
                     </div>
+                    <div class="ticket-mensuel">soit <span id="moyenneMensuelleSocietes">0,00 €</span> HT / mois en moyenne</div>
                     <div style="text-align: right; color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">Montants exprimés en € HT</div>
 
                     <button class="btn-generate" onclick="ouvrirModal('Societes')">Éditer Lettre de Mission</button>
@@ -617,6 +619,7 @@
                         <span>TOTAL ANNUEL</span>
                         <span class="value" id="totalAnnuelBNC">0,00 €</span>
                     </div>
+                    <div class="ticket-mensuel">soit <span id="moyenneMensuelleBNC">0,00 €</span> HT / mois en moyenne</div>
                     <div style="text-align: right; color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">Montants exprimés en € HT</div>
 
                     <button class="btn-generate" onclick="ouvrirModal('BNC')">Éditer Lettre de Mission</button>
@@ -1072,6 +1075,7 @@
             document.getElementById('totalLignesLibresSocietes').textContent = formatNumber(lignesLibresMt) + ' €';
             document.getElementById('fraisChancellerieSocietes').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelSocietes').textContent = formatNumber(total) + ' €';
+            document.getElementById('moyenneMensuelleSocietes').textContent = formatNumber(total / 12) + ' €';
         }
 
         // --- BNC ---
@@ -1141,6 +1145,7 @@
             document.getElementById('totalLignesLibresBNC').textContent = formatNumber(lignesLibresMt) + ' €';
             document.getElementById('fraisChancellerieBNC').textContent = formatNumber(frais) + ' €';
             document.getElementById('totalAnnuelBNC').textContent = formatNumber(total) + ' €';
+            document.getElementById('moyenneMensuelleBNC').textContent = formatNumber(total / 12) + ' €';
         }
 
         // ==================== DOSSIERS SAUVEGARDÉS ====================
