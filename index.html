@@ -316,6 +316,10 @@
 
                 <div class="section-block">
                     <h3>Identification</h3>
+                    <label style="display:flex; align-items:center; gap:8px; margin-bottom:20px; cursor:pointer; color: var(--text-muted); font-size:0.9rem;">
+                        <input type="checkbox" id="nonCreeeSocietes" onchange="toggleNonCreee('Societes')" style="width:auto;">
+                        Société pas encore créée (prospect — SIRET pas encore attribué)
+                    </label>
                     <div class="pappers-row">
                         <div class="input-group" style="margin-bottom: 0;">
                             <label>SIRET (Import Pappers)</label>
@@ -407,9 +411,16 @@
                         <div style="text-align: center; margin-bottom: 15px;">
                             <a href="#" onclick="toggleManualMode('societes'); return false;" style="color: var(--text-muted); font-size: 0.8rem;">← Retour aux offres packagées</a>
                         </div>
-                        <div class="form-grid-2">
+                        <div class="form-grid-3">
                             <div class="input-group"><label>Nom Offre</label><input type="text" id="customGammeSocietes"></div>
-                            <div class="input-group"><label>Prix Mensuel HT (€)</label><input type="number" id="customPrixSocietes"></div>
+                            <div class="input-group"><label>Prix HT (€)</label><input type="number" id="customPrixSocietes"></div>
+                            <div class="input-group">
+                                <label>Périodicité</label>
+                                <select id="customUniteSocietes">
+                                    <option value="mensuel">Mensuel</option>
+                                    <option value="annuel">Annuel</option>
+                                </select>
+                            </div>
                         </div>
                         <button class="btn-api" style="width:100%" onclick="validerFormuleManuelleSocietes()">Appliquer Tarif</button>
                     </div>
@@ -496,6 +507,10 @@
 
                 <div class="section-block">
                     <h3>Identification</h3>
+                    <label style="display:flex; align-items:center; gap:8px; margin-bottom:20px; cursor:pointer; color: var(--text-muted); font-size:0.9rem;">
+                        <input type="checkbox" id="nonCreeeBNC" onchange="toggleNonCreee('BNC')" style="width:auto;">
+                        Activité pas encore créée (prospect — SIRET pas encore attribué)
+                    </label>
                     <div class="pappers-row">
                         <div class="input-group" style="margin-bottom: 0;">
                             <label>SIRET</label>
@@ -558,9 +573,16 @@
                         <div style="text-align: center; margin-bottom: 15px;">
                             <a href="#" onclick="toggleManualMode('bnc'); return false;" style="color: var(--text-muted); font-size: 0.8rem;">← Retour aux offres packagées</a>
                         </div>
-                        <div class="form-grid-2">
+                        <div class="form-grid-3">
                             <div class="input-group"><label>Nom Offre</label><input type="text" id="customGammeBNC"></div>
-                            <div class="input-group"><label>Prix Mensuel HT (€)</label><input type="number" id="customPrixBNC"></div>
+                            <div class="input-group"><label>Prix HT (€)</label><input type="number" id="customPrixBNC"></div>
+                            <div class="input-group">
+                                <label>Périodicité</label>
+                                <select id="customUniteBNC">
+                                    <option value="mensuel">Mensuel</option>
+                                    <option value="annuel">Annuel</option>
+                                </select>
+                            </div>
                         </div>
                         <button class="btn-api" style="width:100%" onclick="validerFormuleManuelleBNC()">Valider</button>
                     </div>
@@ -805,6 +827,13 @@
             }
         }
 
+        function toggleNonCreee(type) {
+            const checked = document.getElementById('nonCreee' + type).checked;
+            const page = (type === 'Societes') ? 'societes-page' : 'bnc-page';
+            const pappersRow = document.querySelector('#' + page + ' .pappers-row');
+            if(pappersRow) pappersRow.style.display = checked ? 'none' : 'grid';
+        }
+
         function toggleOffresInfo(type) {
             const panel = document.getElementById('offres-info-' + type);
             panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
@@ -920,8 +949,8 @@
             { min: 3500000, max: 999999999, ess: 1400, pil: 1510, perf: 1770 }
         ];
 
-        let selFormSoc = null; let prixBaseSoc = 0;
-        let selFormBNC = null; let prixBaseBNC = 0;
+        let selFormSoc = null; let prixBaseSoc = 0; let uniteBaseSoc = 'mensuel';
+        let selFormBNC = null; let prixBaseBNC = 0; let uniteBaseBNC = 'mensuel';
 
         function formatNumber(num) {
             return num.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1008,7 +1037,8 @@
 
         function validerFormuleManuelleSocietes() {
             selFormSoc = document.getElementById('customGammeSocietes').value;
-            prixBaseSoc = parseFloat(document.getElementById('customPrixSocietes').value);
+            prixBaseSoc = parseFloat(document.getElementById('customPrixSocietes').value) || 0;
+            uniteBaseSoc = document.getElementById('customUniteSocietes').value;
             calculerDevisSocietes();
         }
 
@@ -1020,16 +1050,19 @@
             const maj = (['BTP','Carrosserie','CHR'].includes(sec)) ? 1.1 : 1;
             
             let mensuel = prixBaseSoc;
+            let cptaAnnuelManuel = null;
             if(prixBaseSoc === 0) {
                 const grille = grillesSoc.find(g => ca >= g.min && ca < g.max) || grillesSoc[0];
                 if(selFormSoc === 'ESSENTIEL') mensuel = grille.ess;
                 if(selFormSoc === 'PILOTAGE') mensuel = grille.pil;
                 if(selFormSoc === 'PERFORMANCE') mensuel = grille.perf;
                 mensuel = Math.round(mensuel * maj);
+            } else if(uniteBaseSoc === 'annuel') {
+                cptaAnnuelManuel = prixBaseSoc;
             }
 
             const tarifBulletin = parseFloat(document.getElementById('tarifBulletinSocietes').value)||0;
-            const cpta = mensuel * 12;
+            const cpta = (cptaAnnuelManuel !== null) ? cptaAnnuelManuel : mensuel * 12;
             const social = nbSal * tarifBulletin * 12;
             const pv = parseFloat(document.getElementById('pvAgoSocietes').value)||0;
             const reg = parseFloat(document.getElementById('registresLegauxSocietes').value)||0;
@@ -1085,7 +1118,8 @@
 
         function validerFormuleManuelleBNC() {
             selFormBNC = document.getElementById('customGammeBNC').value;
-            prixBaseBNC = parseFloat(document.getElementById('customPrixBNC').value);
+            prixBaseBNC = parseFloat(document.getElementById('customPrixBNC').value) || 0;
+            uniteBaseBNC = document.getElementById('customUniteBNC').value;
             calculerDevisBNC();
         }
 
@@ -1095,13 +1129,16 @@
             const nbSal = parseInt(document.getElementById('nbSalariesBNC').value) || 0;
             
             let mensuel = prixBaseBNC;
+            let cptaAnnuelManuel = null;
             if(prixBaseBNC === 0) {
                 const grille = grillesBNC.find(g => ca >= g.min && ca < g.max) || grillesBNC[0];
                 mensuel = (selFormBNC === 'ESSENTIEL') ? grille.ess : grille.pil;
+            } else if(uniteBaseBNC === 'annuel') {
+                cptaAnnuelManuel = prixBaseBNC;
             }
 
             const tarifBulletin = parseFloat(document.getElementById('tarifBulletinBNC').value)||0;
-            const cpta = mensuel * 12;
+            const cpta = (cptaAnnuelManuel !== null) ? cptaAnnuelManuel : mensuel * 12;
             const social = nbSal * tarifBulletin * 12;
             const ir = parseFloat(document.getElementById('irBNC').value)||0;
             const fonc = (parseInt(document.getElementById('nombreBiensBNC').value)||0) * 150;
@@ -1134,13 +1171,14 @@
             'irSocietes', 'nombreBiensSocietes', 'infoMensuelSocietes', 'infoCommentaireSocietes',
             'tauxChancellerieSocietes', 'capitalSocietes', 'dateCreationSocietes', 'formeJuridiqueSocietes',
             'adresseSocietes', 'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
-            'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes'
+            'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes',
+            'customUniteSocietes'
         ];
         const champsBNC = [
             'siretBNC', 'nomDossierBNC', 'caClientBNC', 'nbSalariesBNC', 'tarifBulletinBNC',
             'irBNC', 'nombreBiensBNC', 'infoMensuelBNC', 'infoCommentaireBNC', 'tauxChancellerieBNC',
             'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'dateDebutMissionBNC',
-            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC'
+            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC', 'customUniteBNC'
         ];
 
         function collecterDossier(type) {
@@ -1153,6 +1191,9 @@
             data.selFormule = (type === 'Societes') ? selFormSoc : selFormBNC;
             data.prixBase = (type === 'Societes') ? prixBaseSoc : prixBaseBNC;
             data.lignesLibres = getLignesLibres(type).map(l => ({ description: l.description, montant: l.montant }));
+            data.confrereNom = confrereNomActuel;
+            data.confrereCabinet = confrereCabinetActuel;
+            data.confrereAdresse = confrereAdresseActuel;
             const totalEl = document.getElementById('totalAnnuel' + type);
             data.totalAnnuel = totalEl ? totalEl.textContent : '';
             return data;
@@ -1195,9 +1236,14 @@
             const idField = document.getElementById('dossierId' + type);
             if(idField) idField.value = data.id;
 
+            confrereNomActuel = data.confrereNom || '';
+            confrereCabinetActuel = data.confrereCabinet || '';
+            confrereAdresseActuel = data.confrereAdresse || '';
+
             if(type === 'Societes') {
                 selFormSoc = data.selFormule || null;
                 prixBaseSoc = data.prixBase || 0;
+                uniteBaseSoc = document.getElementById('customUniteSocietes').value || 'mensuel';
                 lignesLibresSocietes = data.lignesLibres || [];
                 calculerTarifsSocietes();
                 document.querySelectorAll('#societes-page .price-card').forEach(c => c.classList.remove('selected'));
@@ -1211,6 +1257,7 @@
             } else {
                 selFormBNC = data.selFormule || null;
                 prixBaseBNC = data.prixBase || 0;
+                uniteBaseBNC = document.getElementById('customUniteBNC').value || 'mensuel';
                 lignesLibresBNC = data.lignesLibres || [];
                 calculerTarifsBNC();
                 document.querySelectorAll('#bnc-page .price-card').forEach(c => c.classList.remove('selected'));
@@ -1271,9 +1318,17 @@
 
         // ==================== COURRIER CONFRÈRE ====================
         let typeConfrereActuel = 'Societes';
+        // Mémoire partagée du confrère/cabinet quitté, réutilisée entre le Courrier
+        // Confrère et la Lettre de Résiliation pour ne pas la ressaisir deux fois.
+        let confrereNomActuel = '';
+        let confrereCabinetActuel = '';
+        let confrereAdresseActuel = '';
 
         function ouvrirModalConfrere(type) {
             typeConfrereActuel = type;
+            document.getElementById('confrereNom').value = confrereNomActuel;
+            document.getElementById('confrereCabinet').value = confrereCabinetActuel;
+            document.getElementById('confrereAdresse').value = confrereAdresseActuel;
             ouvrirModal('Confrere');
         }
 
@@ -1292,6 +1347,10 @@
                 : clientNom;
             const dateDebut = document.getElementById('dateDebutMission' + suffix).value;
             const [signataireNom, signataireTitre] = document.getElementById('confrereSignataire').value.split('|');
+
+            confrereNomActuel = nom;
+            confrereCabinetActuel = cabinet;
+            confrereAdresseActuel = adresse;
 
             const data = {
                 confrere_civilite: civilite,
@@ -1321,6 +1380,8 @@
                 : document.getElementById('nomDossierBNC').value;
             const champSignataire = document.getElementById('ruptureSignataireNom');
             if(champSignataire && !champSignataire.value) champSignataire.value = dirigeant || '';
+            document.getElementById('ruptureCabinetNom').value = confrereCabinetActuel;
+            document.getElementById('ruptureCabinetAdresse').value = confrereAdresseActuel;
             ouvrirModal('Rupture');
         }
 
@@ -1349,13 +1410,17 @@
             const motifsBrut = document.getElementById('ruptureMotifs').value;
             const motifs = motifsBrut.split('\n').map(m => m.trim()).filter(Boolean);
 
+            const cabinetAdresse = document.getElementById('ruptureCabinetAdresse').value;
+            confrereCabinetActuel = cabinetNom;
+            confrereAdresseActuel = cabinetAdresse;
+
             const data = {
                 rupture_client_nom: clientNom,
                 rupture_client_adresse: clientAdresse,
                 rupture_client_siret: clientSiret ? ('Siret ' + clientSiret) : '',
                 rupture_client_forme_capital: formeCapital,
                 rupture_cabinet_nom: cabinetNom,
-                rupture_cabinet_adresse: document.getElementById('ruptureCabinetAdresse').value,
+                rupture_cabinet_adresse: cabinetAdresse,
                 rupture_lieu_date: (ville ? (ville + ', le ') : 'Le ') + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 rupture_civilite: document.getElementById('ruptureCivilite').value,
                 rupture_date_effet: dateEffet,

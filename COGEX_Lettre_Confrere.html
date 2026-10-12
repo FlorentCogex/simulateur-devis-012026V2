@@ -81,7 +81,16 @@
     @media print {
         .no-print { display: none !important; }
 
-        @page { size: A4; margin: 15mm; }
+        @page {
+            size: A4;
+            margin: 15mm 15mm 20mm 15mm;
+            @bottom-center {
+                content: "Page " counter(page) " / " counter(pages);
+                font-family: 'Bahnschrift Light', 'Segoe UI', sans-serif;
+                font-size: 9pt;
+                color: #666;
+            }
+        }
 
         html, body { margin: 0 !important; padding: 0 !important; width: 100%; height: auto; }
         body { background-color: white !important; color: #333; }
@@ -138,6 +147,8 @@
             setTimeout(function() {
                 let html = document.body.innerHTML;
                 const store = localStorage;
+
+                document.title = (store.getItem('confrere_client_nom') || 'Client') + ' - Courrier Confraternel';
 
                 html = html.replaceAll('{{CIVILITE}}', store.getItem('confrere_civilite') || 'Cher Confrère');
                 html = html.replaceAll('{{CONFRERE_NOM}}', store.getItem('confrere_nom') || '');
