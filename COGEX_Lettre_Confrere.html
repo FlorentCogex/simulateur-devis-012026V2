@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courrier Confraternel - Cabinet Cogex</title>
+    <script src="envoi-outlook.js"></script>
     <script src="export-word.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <style>
@@ -33,6 +34,7 @@
     }
     .btn-save { background: #fff; color: #1a4d2e; }
     .btn-print { background: #1a4d2e; color: white; }
+    .no-print .btn-outlook { background: #fff; color: #0f6cbd; border-color: #0f6cbd; }
     .no-print .btn-word { background: #fff; color: #2b579a; border-color: #2b579a; }
 
     .page-header {
@@ -158,6 +160,23 @@
 
         // Export Word (.docx) : vrai document Word construit élément par élément
         // (en-tête et pied de page Word, tableau sans bordures, logo intégré)
+        // Envoi par Outlook : brouillon avec le courrier en PDF (voir envoi-outlook.js)
+        function envoyerCourrierOutlook() {
+            const store = localStorage;
+            const client = store.getItem('confrere_client_nom') || 'Client';
+            const civilite = store.getItem('confrere_civilite') || 'Cher Confrère';
+            return envoyerParOutlook({
+                nomFichier: 'Lettre_Confrere_' + client.replace(/[^a-zA-Z0-9]/g, '_'),
+                objet: 'Reprise du dossier ' + client,
+                destinataire: store.getItem('confrere_email') || '',
+                message: civilite + ',\n\n'
+                    + 'Veuillez trouver ci-joint notre courrier relatif à la reprise du dossier ' + client + '.\n\n'
+                    + "Nous vous prions d'agréer, " + civilite + ", l'expression de nos salutations confraternelles.\n\n"
+                    + (store.getItem('confrere_signataire_nom') || '') + '\n'
+                    + (store.getItem('confrere_signataire_titre') || '') + ' – Cabinet COGEX'
+            });
+        }
+
         async function telechargerWord() {
             const nomClient = localStorage.getItem('confrere_client_nom') || 'Client';
             const d = new Date();
@@ -293,6 +312,7 @@
     <div class="no-print" contenteditable="false">
         <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
         <button class="btn-word" onclick="telechargerWord()">📝 Word modifiable</button>
+        <button class="btn-outlook" onclick="envoyerCourrierOutlook()">✉️ Envoyer par Outlook</button>
         <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
 

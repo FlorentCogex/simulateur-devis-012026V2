@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Résiliation de Mission</title>
+    <script src="envoi-outlook.js"></script>
     <script src="export-word.js"></script>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,6 +28,7 @@
     }
     .btn-save { background: #fff; color: #333; }
     .btn-print { background: #333; color: white; }
+    .no-print .btn-outlook { background: #fff; color: #0f6cbd; border-color: #0f6cbd; }
     .no-print .btn-word { background: #fff; color: #2b579a; border-color: #2b579a; }
 
     .container {
@@ -135,6 +137,21 @@
 
         const CSS_WORD = `@page WordSection1 { size: 21cm 29.7cm; margin: 2cm; } div.WordSection1 { page: WordSection1; } body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; } .sender-block { margin-bottom: 30pt; } .sender-name, .recipient-name { font-weight: bold; text-transform: uppercase; } .recipient-block, .recipient-block div { text-align: right; } .lieu-date { text-align: right; margin: 20pt 0 6pt 0; } .reference { font-size: 10pt; margin-bottom: 20pt; } p { text-align: justify; margin: 0 0 12pt 0; } ul.motifs li { text-align: justify; margin-bottom: 6pt; } .signature-block, .signature-block div { text-align: right; } .signature-block { margin-top: 36pt; } .signature-name { font-weight: bold; }`;
 
+        // Envoi par Outlook au client : brouillon avec le courrier en PDF (voir envoi-outlook.js)
+        function envoyerResiliationOutlook() {
+            const client = localStorage.getItem('rupture_client_nom') || 'Client';
+            return envoyerParOutlook({
+                nomFichier: 'Lettre_Resiliation_' + client.replace(/[^a-zA-Z0-9]/g, '_'),
+                objet: 'Lettre de résiliation de votre mission comptable',
+                destinataire: localStorage.getItem('rupture_email_client') || '',
+                message: 'Bonjour,\n\n'
+                    + 'Comme convenu, vous trouverez ci-joint le courrier de résiliation à adresser à votre cabinet comptable actuel.\n\n'
+                    + "Il vous suffit de le signer et de l'envoyer en lettre recommandée avec accusé de réception.\n\n"
+                    + 'Nous restons à votre disposition pour toute question.\n\n'
+                    + 'Bien cordialement,'
+            });
+        }
+
         window.addEventListener('load', function() {
             setTimeout(function() {
                 let html = document.body.innerHTML;
@@ -176,6 +193,7 @@
     <div class="no-print" contenteditable="false">
         <button class="btn-save" onclick="sauvegarderFichier()">💾 Sauvegarder</button>
         <button class="btn-word" onclick="telechargerWord('Lettre_Resiliation_', 'rupture_client_nom', CSS_WORD)">📝 Word modifiable</button>
+        <button class="btn-outlook" onclick="envoyerResiliationOutlook()">✉️ Envoyer par Outlook</button>
         <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
     </div>
 

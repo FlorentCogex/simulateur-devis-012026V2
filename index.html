@@ -669,6 +669,7 @@
                 <div class="input-group"><label>Dirigeant</label><input type="text" id="dirigeantsSocietes"></div>
                 <div class="input-group"><label>Qualité</label><input type="text" id="qualiteDirigeantSocietes"></div>
             </div>
+            <div class="input-group"><label>E-mail du client</label><input type="email" id="emailClientSocietes" placeholder="Ex: contact@client.fr"></div>
             <div class="form-grid-2">
                 <div class="input-group"><label>Début Mission</label><input type="date" id="dateDebutMissionSocietes"></div>
                 <div class="input-group"><label>Fin 1er Exercice</label><input type="date" id="dateFinExerciceSocietes"></div>
@@ -697,6 +698,7 @@
                 <div class="input-group"><label>Activité</label><input type="text" id="activitePreciseBNC"></div>
             </div>
             <div class="input-group"><label>Adresse Pro</label><input type="text" id="adresseBNC"></div>
+            <div class="input-group"><label>E-mail du client</label><input type="email" id="emailClientBNC" placeholder="Ex: contact@client.fr"></div>
             
             <h3>Dates Mission</h3>
             <div class="form-grid-2">
@@ -748,6 +750,7 @@
             </div>
             <div class="input-group"><label>Cabinet</label><input type="text" id="confrereCabinet" placeholder="Ex: CABINET EPHISENS"></div>
             <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="Ex: Micropolis – Belle Aureille, 05000 GAP"></div>
+            <div class="input-group"><label>E-mail du cabinet (pour l'envoi par Outlook)</label><input type="email" id="confrereEmail" placeholder="Ex: contact@ephisens.fr"></div>
             <div class="input-group">
                 <label>Signataire</label>
                 <select id="confrereSignataire">
@@ -1193,13 +1196,13 @@
             'tauxChancellerieSocietes', 'capitalSocietes', 'dateCreationSocietes', 'formeJuridiqueSocietes',
             'adresseSocietes', 'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
             'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes',
-            'customUniteSocietes', 'signataireSocietes'
+            'customUniteSocietes', 'signataireSocietes', 'emailClientSocietes'
         ];
         const champsBNC = [
             'siretBNC', 'nomDossierBNC', 'caClientBNC', 'nbSalariesBNC', 'tarifBulletinBNC',
             'irBNC', 'nombreBiensBNC', 'infoMensuelBNC', 'infoCommentaireBNC', 'tauxChancellerieBNC',
             'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'dateDebutMissionBNC',
-            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC', 'customUniteBNC', 'signataireBNC'
+            'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC', 'customUniteBNC', 'signataireBNC', 'emailClientBNC'
         ];
 
         function collecterDossier(type) {
@@ -1215,6 +1218,7 @@
             data.confrereNom = confrereNomActuel;
             data.confrereCabinet = confrereCabinetActuel;
             data.confrereAdresse = confrereAdresseActuel;
+            data.confrereEmail = confrereEmailActuel;
             const totalEl = document.getElementById('totalAnnuel' + type);
             data.totalAnnuel = totalEl ? totalEl.textContent : '';
             return data;
@@ -1260,6 +1264,7 @@
             confrereNomActuel = data.confrereNom || '';
             confrereCabinetActuel = data.confrereCabinet || '';
             confrereAdresseActuel = data.confrereAdresse || '';
+            confrereEmailActuel = data.confrereEmail || '';
 
             if(type === 'Societes') {
                 selFormSoc = data.selFormule || null;
@@ -1344,12 +1349,14 @@
         let confrereNomActuel = '';
         let confrereCabinetActuel = '';
         let confrereAdresseActuel = '';
+        let confrereEmailActuel = '';
 
         function ouvrirModalConfrere(type) {
             typeConfrereActuel = type;
             document.getElementById('confrereNom').value = confrereNomActuel;
             document.getElementById('confrereCabinet').value = confrereCabinetActuel;
             document.getElementById('confrereAdresse').value = confrereAdresseActuel;
+            document.getElementById('confrereEmail').value = confrereEmailActuel;
             ouvrirModal('Confrere');
         }
 
@@ -1377,6 +1384,7 @@
             confrereNomActuel = nom;
             confrereCabinetActuel = cabinet;
             confrereAdresseActuel = adresse;
+            confrereEmailActuel = document.getElementById('confrereEmail').value.trim();
 
             const data = {
                 confrere_civilite: civilite,
@@ -1388,7 +1396,8 @@
                 confrere_date_debut: dateDebut,
                 confrere_lieu_date: 'Plan de Cuques, le ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 confrere_signataire_nom: signataireNom,
-                confrere_signataire_titre: signataireTitre
+                confrere_signataire_titre: signataireTitre,
+                confrere_email: confrereEmailActuel
             };
             for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
 
@@ -1453,6 +1462,7 @@
                 rupture_clause_reference: clauseReference,
                 rupture_signataire_nom: document.getElementById('ruptureSignataireNom').value,
                 rupture_signataire_qualite: document.getElementById('ruptureSignataireQualite').value,
+                rupture_email_client: document.getElementById('emailClient' + suffix).value.trim(),
                 rupture_motifs: JSON.stringify(motifs)
             };
             for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
@@ -1473,6 +1483,7 @@
             data.date_debut = document.getElementById('dateDebutMission' + suffix).value;
             data.date_fin = document.getElementById('dateFinExercice' + suffix).value;
             data.signataire_cabinet = document.getElementById('signataire' + suffix).value;
+            data.email_client = document.getElementById('emailClient' + suffix).value.trim();
             
             // Gestion des champs Informatique
             const infoAnnuel = (parseFloat(document.getElementById('infoMensuel' + suffix).value)||0) * 12;

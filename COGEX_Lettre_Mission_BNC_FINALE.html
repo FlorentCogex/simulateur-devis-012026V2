@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Mission - Cabinet Cogex</title>
+    <script src="envoi-outlook.js"></script>
     <script src="export-word.js"></script>
 <style>
     /* 1. DÉCLARATION DES POLICES */
@@ -852,6 +853,10 @@
             📝 Word modifiable
         </button>
         
+        <button onclick="envoyerLettreOutlook()" style="background:#fff; color:#0f6cbd; border:2px solid #0f6cbd; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
+            ✉️ Envoyer par Outlook
+        </button>
+
         <button onclick="window.print()" style="background:#1a4d2e; color:white; border:2px solid #1a4d2e; padding:10px 20px; border-radius:4px; cursor:pointer; font-weight:bold; font-family:'Segoe UI', sans-serif;">
             🖨️ Imprimer / PDF
         </button>
@@ -1994,6 +1999,23 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
         `;
 
         exporterWord(clone, nomFichier, cssWord);
+    }
+
+    // Envoi par Outlook : brouillon avec la lettre en PDF (voir envoi-outlook.js)
+    function envoyerLettreOutlook() {
+        const nomClient = localStorage.getItem('nom_client') || 'Client';
+        const signataire = localStorage.getItem('signataire_cabinet') || 'Florent DESBLANCS';
+        return envoyerParOutlook({
+            nomFichier: 'Lettre_Mission_' + nomClient.replace(/[^a-zA-Z0-9]/g, '_'),
+            objet: 'Lettre de mission – ' + nomClient,
+            destinataire: localStorage.getItem('email_client') || '',
+            message: 'Bonjour,\n\n'
+                + 'Veuillez trouver ci-joint notre proposition de lettre de mission.\n\n'
+                + 'Nous vous remercions de bien vouloir nous la retourner signée, précédée de la mention « Bon pour accord ».\n\n'
+                + 'Nous restons à votre disposition pour tout renseignement complémentaire.\n\n'
+                + 'Bien cordialement,\n\n'
+                + signataire + '\nExpert-comptable – Cabinet COGEX'
+        });
     }
 
     // 2. UTILITAIRES DE FORMATAGE
