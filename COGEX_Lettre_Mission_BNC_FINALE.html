@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lettre de Mission - Cabinet Cogex</title>
-    <script src="envoi-outlook.js"></script>
-    <script src="export-word.js"></script>
+    <script>
+        // Charge les scripts communs dans leur dernière version (évite une ancienne copie en cache)
+        (function () {
+            const v = (new URLSearchParams(location.search).get('v') || '').replace(/[^0-9]/g, '') || Date.now();
+            document.write('<script src="envoi-outlook.js?v=' + v + '"><\/script>'
+                + '<script src="export-word.js?v=' + v + '"><\/script>');
+        })();
+    </script>
 <style>
     /* 1. DÉCLARATION DES POLICES */
     @font-face {
