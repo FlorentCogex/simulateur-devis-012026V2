@@ -2063,6 +2063,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             nomFichier: 'Lettre_Mission_' + nomClient.replace(/[^a-zA-Z0-9]/g, '_'),
             objet: 'Lettre de mission – ' + nomClient,
             destinataire: localStorage.getItem('email_client') || '',
+            cleEmail: 'email_client',
             message: 'Bonjour,\n\n'
                 + 'Veuillez trouver ci-joint notre proposition de lettre de mission.\n\n'
                 + 'Nous vous remercions de bien vouloir nous la retourner signée, précédée de la mention « Bon pour accord ».\n\n'

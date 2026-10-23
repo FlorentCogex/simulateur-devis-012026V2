@@ -145,7 +145,62 @@ function afficherBandeauOutlook(html, couleur) {
 }
 
 // options : { nomFichier, objet, message (texte, lignes séparées par \n), destinataire }
+// Fenêtre de saisie du destinataire, pré-remplie avec l'e-mail connu du dossier.
+// Renvoie l'adresse saisie (éventuellement vide), ou null si l'utilisateur annule.
+function demanderDestinataire(options) {
+    return new Promise(resolve => {
+        const fond = document.createElement('div');
+        fond.className = 'no-print fenetre-outlook';
+        fond.setAttribute('contenteditable', 'false');
+        fond.style.cssText = 'position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:"Segoe UI",sans-serif;';
+        fond.innerHTML = '<div style="background:#fff;border-radius:8px;padding:24px;width:min(440px,92vw);box-shadow:0 8px 30px rgba(0,0,0,.3);">'
+            + '<div style="font-size:17px;font-weight:bold;color:#1a4d2e;margin-bottom:6px;">✉️ Envoyer par Outlook</div>'
+            + '<div style="font-size:13px;color:#666;margin-bottom:16px;">Objet : ' + echapperHtml(options.objet) + '</div>'
+            + '<label style="display:block;font-size:13px;font-weight:bold;color:#333;margin-bottom:6px;">E-mail du destinataire</label>'
+            + '<input type="text" class="champ-destinataire" placeholder="exemple@domaine.fr" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #bbb;border-radius:4px;font-size:15px;">'
+            + '<div style="font-size:12px;color:#888;margin-top:6px;">Plusieurs adresses : séparez-les par « ; ». Vous pouvez aussi laisser vide et le choisir dans Outlook.</div>'
+            + '<div class="erreur-destinataire" style="font-size:13px;color:#c0392b;margin-top:8px;min-height:1em;"></div>'
+            + '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;">'
+            + '<button type="button" class="annuler" style="padding:10px 18px;border:1px solid #bbb;background:#fff;border-radius:4px;cursor:pointer;font-size:14px;">Annuler</button>'
+            + '<button type="button" class="valider" style="padding:10px 18px;border:none;background:#0f6cbd;color:#fff;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;">Créer le brouillon</button>'
+            + '</div></div>';
+        document.body.appendChild(fond);
+
+        const champ = fond.querySelector('.champ-destinataire');
+        champ.value = options.destinataire || '';
+        champ.focus();
+        champ.select();
+
+        const fermer = valeur => { fond.remove(); resolve(valeur); };
+        const valider = () => {
+            const adresses = champ.value.split(/[;,]/).map(a => a.trim()).filter(Boolean);
+            const invalide = adresses.find(a => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a));
+            if (invalide) {
+                fond.querySelector('.erreur-destinataire').textContent = 'Adresse e-mail invalide : ' + invalide;
+                champ.focus();
+                return;
+            }
+            fermer(adresses.join('; '));
+        };
+        fond.querySelector('.valider').addEventListener('click', valider);
+        fond.querySelector('.annuler').addEventListener('click', () => fermer(null));
+        champ.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); valider(); }
+            if (e.key === 'Escape') fermer(null);
+        });
+    });
+}
+
+// options : { nomFichier, objet, message (texte, lignes séparées par \n), destinataire,
+//             cleEmail (clé localStorage où mémoriser l'adresse saisie) }
 async function envoyerParOutlook(options) {
+    const destinataire = await demanderDestinataire(options);
+    if (destinataire === null) return;
+    options = { ...options, destinataire };
+    if (options.cleEmail && destinataire) {
+        try { localStorage.setItem(options.cleEmail, destinataire); } catch (e) { /* stockage indisponible */ }
+    }
+
     try {
         afficherBandeauOutlook('Connexion à Outlook…');
         const jeton = await obtenirJetonGraph();

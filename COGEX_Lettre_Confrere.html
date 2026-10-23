@@ -169,6 +169,7 @@
                 nomFichier: 'Lettre_Confrere_' + client.replace(/[^a-zA-Z0-9]/g, '_'),
                 objet: 'Reprise du dossier ' + client,
                 destinataire: store.getItem('confrere_email') || '',
+                cleEmail: 'confrere_email',
                 message: civilite + ',\n\n'
                     + 'Veuillez trouver ci-joint notre courrier relatif à la reprise du dossier ' + client + '.\n\n'
                     + "Nous vous prions d'agréer, " + civilite + ", l'expression de nos salutations confraternelles.\n\n"

@@ -144,6 +144,7 @@
                 nomFichier: 'Lettre_Resiliation_' + client.replace(/[^a-zA-Z0-9]/g, '_'),
                 objet: 'Lettre de résiliation de votre mission comptable',
                 destinataire: localStorage.getItem('rupture_email_client') || '',
+                cleEmail: 'rupture_email_client',
                 message: 'Bonjour,\n\n'
                     + 'Comme convenu, vous trouverez ci-joint le courrier de résiliation à adresser à votre cabinet comptable actuel.\n\n'
                     + "Il vous suffit de le signer et de l'envoyer en lettre recommandée avec accusé de réception.\n\n"
