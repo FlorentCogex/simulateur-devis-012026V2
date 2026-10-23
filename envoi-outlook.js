@@ -8,8 +8,8 @@
 // chargées qu'au premier clic sur « Envoyer par Outlook ».
 
 const OUTLOOK_CONFIG = {
-    clientId: 'A_RENSEIGNER',   // ID d'application (client)
-    tenantId: 'A_RENSEIGNER'    // ID de l'annuaire (locataire)
+    clientId: 'efc3d5b8-a759-44e1-ad00-308cc2d6b5aa',   // ID d'application (client)
+    tenantId: '0118976c-00bc-479c-a27c-b8afadb6e5f3'    // ID de l'annuaire (locataire)
 };
 const OUTLOOK_SCOPES = ['Mail.ReadWrite'];
 
