@@ -1402,7 +1402,7 @@
             for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
 
             fermerModal('Confrere');
-            window.open('COGEX_Lettre_Confrere.html', '_blank');
+            window.open('COGEX_Lettre_Confrere.html?v=' + Date.now(), '_blank');
         }
 
         // ==================== LETTRE DE RÉSILIATION (CÔTÉ CLIENT) ====================
@@ -1468,7 +1468,7 @@
             for(const [k,v] of Object.entries(data)) localStorage.setItem(k, v || '');
 
             fermerModal('Rupture');
-            window.open('COGEX_Lettre_Rupture.html', '_blank');
+            window.open('COGEX_Lettre_Rupture.html?v=' + Date.now(), '_blank');
         }
 
         // ==================== GENERATION PDF ====================
@@ -1521,9 +1521,9 @@
             sauvegarderDossier(suffix, true);
 
             if (type === 'Societes') {
-                window.open('COGEX_Lettre_Mission_Societes_FINALE.html', '_blank');
+                window.open('COGEX_Lettre_Mission_Societes_FINALE.html?v=' + Date.now(), '_blank');
             } else {
-                window.open('COGEX_Lettre_Mission_BNC_FINALE.html', '_blank');
+                window.open('COGEX_Lettre_Mission_BNC_FINALE.html?v=' + Date.now(), '_blank');
             }
         }
 
