@@ -2119,7 +2119,7 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
             
             // Autres infos
             html = html.replaceAll('{{FORME_JURIDIQUE}}', store.getItem('forme_juridique') || '');
-            html = html.replaceAll('{{ADRESSE}}', store.getItem('adresse') || '');
+            html = html.replaceAll('{{ADRESSE}}', (store.getItem('adresse') || '').split('\n').join('<br>'));
             html = html.replaceAll('{{ACTIVITE}}', store.getItem('activite') || '');
             html = html.replaceAll('{{DIRIGEANTS_COMPLET}}', store.getItem('dirigeants') || '');
             html = html.replaceAll('{{SIGNATAIRE_CABINET}}', store.getItem('signataire_cabinet') || 'Florent DESBLANCS');

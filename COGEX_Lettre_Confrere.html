@@ -302,7 +302,7 @@
                 html = html.replaceAll('{{CIVILITE}}', store.getItem('confrere_civilite') || 'Cher Confrère');
                 html = html.replaceAll('{{CONFRERE_NOM}}', store.getItem('confrere_nom') || '');
                 html = html.replaceAll('{{CONFRERE_CABINET}}', store.getItem('confrere_cabinet') || '');
-                html = html.replaceAll('{{CONFRERE_ADRESSE}}', store.getItem('confrere_adresse') || '');
+                html = html.replaceAll('{{CONFRERE_ADRESSE}}', (store.getItem('confrere_adresse') || '').split('\n').join('<br>'));
                 html = html.replaceAll('{{CLIENT_NOM}}', store.getItem('confrere_client_nom') || '');
                 html = html.replaceAll('{{DIRIGEANT}}', store.getItem('confrere_dirigeant') || '');
                 html = html.replaceAll('{{DATE_DEBUT}}', formaterDate(store.getItem('confrere_date_debut')));

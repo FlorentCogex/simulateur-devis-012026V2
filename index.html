@@ -661,7 +661,12 @@
                 <div class="input-group"><label>Date Création</label><input type="date" id="dateCreationSocietes"></div>
             </div>
             <div class="input-group"><label>Forme Juridique</label><input type="text" id="formeJuridiqueSocietes"></div>
-            <div class="input-group"><label>Adresse Siège</label><input type="text" id="adresseSocietes"></div>
+            <div class="input-group"><label>Adresse Siège</label><input type="text" id="adresseSocietes" placeholder="N° et voie"></div>
+            <div class="input-group"><label>Complément d'adresse (optionnel)</label><input type="text" id="adresseComplementSocietes" placeholder="Bâtiment, résidence, lieu-dit…"></div>
+            <div class="form-grid-2">
+                <div class="input-group"><label>Code postal</label><input type="text" id="codePostalSocietes" placeholder="Ex: 13001"></div>
+                <div class="input-group"><label>Ville</label><input type="text" id="villeSocietes" placeholder="Ex: MARSEILLE"></div>
+            </div>
             <div class="input-group"><label>Activité</label><input type="text" id="activitePreciseSocietes"></div>
             
             <h3>Gouvernance & Dates</h3>
@@ -697,7 +702,12 @@
                 <div class="input-group"><label>Date Début</label><input type="date" id="dateCreationBNC"></div>
                 <div class="input-group"><label>Activité</label><input type="text" id="activitePreciseBNC"></div>
             </div>
-            <div class="input-group"><label>Adresse Pro</label><input type="text" id="adresseBNC"></div>
+            <div class="input-group"><label>Adresse Pro</label><input type="text" id="adresseBNC" placeholder="N° et voie"></div>
+            <div class="input-group"><label>Complément d'adresse (optionnel)</label><input type="text" id="adresseComplementBNC" placeholder="Bâtiment, résidence, lieu-dit…"></div>
+            <div class="form-grid-2">
+                <div class="input-group"><label>Code postal</label><input type="text" id="codePostalBNC" placeholder="Ex: 13001"></div>
+                <div class="input-group"><label>Ville</label><input type="text" id="villeBNC" placeholder="Ex: MARSEILLE"></div>
+            </div>
             <div class="input-group"><label>E-mail du client</label><input type="email" id="emailClientBNC" placeholder="Ex: contact@client.fr"></div>
             
             <h3>Dates Mission</h3>
@@ -749,7 +759,12 @@
                 <div class="input-group"><label id="labelConfrereNom">Nom du confrère</label><input type="text" id="confrereNom" placeholder="Ex: Edwige JACOB"></div>
             </div>
             <div class="input-group"><label>Cabinet</label><input type="text" id="confrereCabinet" placeholder="Ex: CABINET EPHISENS"></div>
-            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="Ex: Micropolis – Belle Aureille, 05000 GAP"></div>
+            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="confrereAdresse" placeholder="N° et voie"></div>
+            <div class="input-group"><label>Complément d'adresse (optionnel)</label><input type="text" id="confrereAdresseComplement" placeholder="Bâtiment, résidence, lieu-dit…"></div>
+            <div class="form-grid-2">
+                <div class="input-group"><label>Code postal</label><input type="text" id="confrereCodePostal" placeholder="Ex: 13001"></div>
+                <div class="input-group"><label>Ville</label><input type="text" id="confrereVille" placeholder="Ex: MARSEILLE"></div>
+            </div>
             <div class="input-group"><label>E-mail du cabinet (pour l'envoi par Outlook)</label><input type="email" id="confrereEmail" placeholder="Ex: contact@ephisens.fr"></div>
             <div class="input-group">
                 <label>Signataire</label>
@@ -772,7 +787,13 @@
 
             <h3>Cabinet Actuel (destinataire)</h3>
             <div class="input-group"><label>Nom du Cabinet</label><input type="text" id="ruptureCabinetNom" placeholder="Ex: CEGEX LITTORAL"></div>
-            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="ruptureCabinetAdresse" placeholder="Ex: 228, Bd National, 13003 MARSEILLE"></div>
+            <div class="input-group"><label>Nom du confrère ou de la consœur (optionnel)</label><input type="text" id="ruptureConfrereNom" placeholder="Ex: Edwige JACOB"></div>
+            <div class="input-group"><label>Adresse du Cabinet</label><input type="text" id="ruptureCabinetAdresse" placeholder="N° et voie"></div>
+            <div class="input-group"><label>Complément d'adresse (optionnel)</label><input type="text" id="ruptureCabinetAdresseComplement" placeholder="Bâtiment, résidence, lieu-dit…"></div>
+            <div class="form-grid-2">
+                <div class="input-group"><label>Code postal</label><input type="text" id="ruptureCabinetCodePostal" placeholder="Ex: 13001"></div>
+                <div class="input-group"><label>Ville</label><input type="text" id="ruptureCabinetVille" placeholder="Ex: MARSEILLE"></div>
+            </div>
 
             <h3>Résiliation</h3>
             <div class="form-grid-2">
@@ -905,9 +926,11 @@
                     updateSummary(suffix);
                 }
 
-                const champAdresse = document.getElementById('adresse' + suffix);
-                if(champAdresse && data.siege) {
-                    champAdresse.value = (data.siege.adresse_ligne_1 || '') + ' ' + (data.siege.code_postal || '') + ' ' + (data.siege.ville || '');
+                if(data.siege) {
+                    document.getElementById('adresse' + suffix).value = data.siege.adresse_ligne_1 || '';
+                    document.getElementById('adresseComplement' + suffix).value = data.siege.adresse_ligne_2 || '';
+                    document.getElementById('codePostal' + suffix).value = data.siege.code_postal || '';
+                    document.getElementById('ville' + suffix).value = data.siege.ville || '';
                 }
                 
                 const champDate = document.getElementById('dateCreation' + suffix);
@@ -1194,14 +1217,15 @@
             'tarifBulletinSocietes', 'secteurActiviteSocietes', 'pvAgoSocietes', 'registresLegauxSocietes',
             'irSocietes', 'nombreBiensSocietes', 'infoMensuelSocietes', 'infoCommentaireSocietes',
             'tauxChancellerieSocietes', 'capitalSocietes', 'dateCreationSocietes', 'formeJuridiqueSocietes',
-            'adresseSocietes', 'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
+            'adresseSocietes', 'adresseComplementSocietes', 'codePostalSocietes', 'villeSocietes',
+            'activitePreciseSocietes', 'dirigeantsSocietes', 'qualiteDirigeantSocietes',
             'dateDebutMissionSocietes', 'dateFinExerciceSocietes', 'customGammeSocietes', 'customPrixSocietes',
             'customUniteSocietes', 'signataireSocietes', 'emailClientSocietes'
         ];
         const champsBNC = [
             'siretBNC', 'nomDossierBNC', 'caClientBNC', 'nbSalariesBNC', 'tarifBulletinBNC',
             'irBNC', 'nombreBiensBNC', 'infoMensuelBNC', 'infoCommentaireBNC', 'tauxChancellerieBNC',
-            'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'dateDebutMissionBNC',
+            'dateCreationBNC', 'activitePreciseBNC', 'adresseBNC', 'adresseComplementBNC', 'codePostalBNC', 'villeBNC', 'dateDebutMissionBNC',
             'dateFinExerciceBNC', 'customGammeBNC', 'customPrixBNC', 'customUniteBNC', 'signataireBNC', 'emailClientBNC'
         ];
 
@@ -1219,6 +1243,7 @@
             data.confrereCabinet = confrereCabinetActuel;
             data.confrereAdresse = confrereAdresseActuel;
             data.confrereEmail = confrereEmailActuel;
+            data.confrereGenre = confrereGenreActuel;
             const totalEl = document.getElementById('totalAnnuel' + type);
             data.totalAnnuel = totalEl ? totalEl.textContent : '';
             return data;
@@ -1265,6 +1290,10 @@
             confrereCabinetActuel = data.confrereCabinet || '';
             confrereAdresseActuel = data.confrereAdresse || '';
             confrereEmailActuel = data.confrereEmail || '';
+            confrereGenreActuel = data.confrereGenre || '';
+
+            // Dossier enregistré avant le passage des adresses sur 3 lignes : on redécoupe l'ancienne saisie
+            if(data['codePostal' + type] === undefined) remplirAdresseClient(type, data['adresse' + type] || '');
 
             if(type === 'Societes') {
                 selFormSoc = data.selFormule || null;
@@ -1350,13 +1379,49 @@
         let confrereCabinetActuel = '';
         let confrereAdresseActuel = '';
         let confrereEmailActuel = '';
+        let confrereGenreActuel = '';   // 'M' ou 'F', déduit de la civilité choisie en premier
+
+        // ==================== ADRESSES SUR 3 LIGNES ====================
+        // Une adresse est saisie sur 3 lignes (voie / complément / code postal + ville) et circule
+        // entre le simulateur et les lettres sous forme d'une seule chaîne, lignes séparées par \n.
+        function lireAdresse(idVoie, idComplement, idCodePostal, idVille) {
+            const v = id => (document.getElementById(id).value || '').trim();
+            const derniereLigne = (v(idCodePostal) + ' ' + v(idVille)).trim();
+            return [v(idVoie), v(idComplement), derniereLigne].filter(Boolean).join('\n');
+        }
+
+        function remplirAdresse(idVoie, idComplement, idCodePostal, idVille, chaine) {
+            const lignes = (chaine || '').split('\n').map(l => l.trim()).filter(Boolean);
+            let voie = '', complement = '', codePostal = '', ville = '';
+            if(lignes.length === 1) {
+                // Ancienne saisie sur une seule ligne : on isole le code postal et la ville si possible
+                const m = lignes[0].match(/^(.*?)[,\s]+(\d{5})\s+(.+)$/);
+                if(m) { voie = m[1]; codePostal = m[2]; ville = m[3]; } else voie = lignes[0];
+            } else if(lignes.length >= 2) {
+                const m = lignes[lignes.length - 1].match(/^(\d{5})\s*(.*)$/);
+                if(m) { codePostal = m[1]; ville = m[2]; } else ville = lignes[lignes.length - 1];
+                voie = lignes[0];
+                complement = lignes.slice(1, -1).join(' ');
+            }
+            document.getElementById(idVoie).value = voie;
+            document.getElementById(idComplement).value = complement;
+            document.getElementById(idCodePostal).value = codePostal;
+            document.getElementById(idVille).value = ville;
+        }
+
+        const lireAdresseClient = suffix => lireAdresse('adresse' + suffix, 'adresseComplement' + suffix, 'codePostal' + suffix, 'ville' + suffix);
+        const remplirAdresseClient = (suffix, chaine) => remplirAdresse('adresse' + suffix, 'adresseComplement' + suffix, 'codePostal' + suffix, 'ville' + suffix, chaine);
+        const lireAdresseConfrere = () => lireAdresse('confrereAdresse', 'confrereAdresseComplement', 'confrereCodePostal', 'confrereVille');
+        const lireAdresseRupture = () => lireAdresse('ruptureCabinetAdresse', 'ruptureCabinetAdresseComplement', 'ruptureCabinetCodePostal', 'ruptureCabinetVille');
 
         function ouvrirModalConfrere(type) {
             typeConfrereActuel = type;
             document.getElementById('confrereNom').value = confrereNomActuel;
             document.getElementById('confrereCabinet').value = confrereCabinetActuel;
-            document.getElementById('confrereAdresse').value = confrereAdresseActuel;
+            remplirAdresse('confrereAdresse', 'confrereAdresseComplement', 'confrereCodePostal', 'confrereVille', confrereAdresseActuel);
             document.getElementById('confrereEmail').value = confrereEmailActuel;
+            if(confrereGenreActuel) document.getElementById('confrereCivilite').value = (confrereGenreActuel === 'F') ? 'Chère Consœur' : 'Cher Confrère';
+            majLibelleConfrere();
             ouvrirModal('Confrere');
         }
 
@@ -1372,7 +1437,7 @@
 
             const suffix = typeConfrereActuel;
             const civilite = document.getElementById('confrereCivilite').value;
-            const adresse = document.getElementById('confrereAdresse').value.trim();
+            const adresse = lireAdresseConfrere();
 
             const clientNom = document.getElementById('nomDossier' + suffix).value || 'le client';
             const dirigeant = (suffix === 'Societes')
@@ -1385,6 +1450,7 @@
             confrereCabinetActuel = cabinet;
             confrereAdresseActuel = adresse;
             confrereEmailActuel = document.getElementById('confrereEmail').value.trim();
+            confrereGenreActuel = (civilite === 'Chère Consœur') ? 'F' : 'M';
 
             const data = {
                 confrere_civilite: civilite,
@@ -1416,7 +1482,11 @@
             const champSignataire = document.getElementById('ruptureSignataireNom');
             if(champSignataire && !champSignataire.value) champSignataire.value = dirigeant || '';
             document.getElementById('ruptureCabinetNom').value = confrereCabinetActuel;
-            document.getElementById('ruptureCabinetAdresse').value = confrereAdresseActuel;
+            document.getElementById('ruptureConfrereNom').value = confrereNomActuel;
+            remplirAdresse('ruptureCabinetAdresse', 'ruptureCabinetAdresseComplement', 'ruptureCabinetCodePostal', 'ruptureCabinetVille', confrereAdresseActuel);
+            if(confrereGenreActuel) document.getElementById('ruptureCivilite').value = (confrereGenreActuel === 'F') ? 'Madame' : 'Monsieur';
+            const champVille = document.getElementById('ruptureVille');
+            if(champVille && !champVille.value) champVille.value = document.getElementById('ville' + type).value || '';
             ouvrirModal('Rupture');
         }
 
@@ -1426,7 +1496,7 @@
 
             const suffix = typeRuptureActuel;
             const clientNom = document.getElementById('nomDossier' + suffix).value || 'le client';
-            const clientAdresse = document.getElementById('adresse' + suffix).value || '';
+            const clientAdresse = lireAdresseClient(suffix);
             const clientSiret = document.getElementById('siret' + suffix).value || '';
 
             let formeCapital = '';
@@ -1445,9 +1515,14 @@
             const motifsBrut = document.getElementById('ruptureMotifs').value;
             const motifs = motifsBrut.split('\n').map(m => m.trim()).filter(Boolean);
 
-            const cabinetAdresse = document.getElementById('ruptureCabinetAdresse').value;
+            const cabinetAdresse = lireAdresseRupture();
+            const confrereNom = document.getElementById('ruptureConfrereNom').value.trim();
+            const civiliteRupture = document.getElementById('ruptureCivilite').value;
             confrereCabinetActuel = cabinetNom;
             confrereAdresseActuel = cabinetAdresse;
+            confrereNomActuel = confrereNom;
+            if(civiliteRupture === 'Madame') confrereGenreActuel = 'F';
+            else if(civiliteRupture === 'Monsieur') confrereGenreActuel = 'M';
 
             const data = {
                 rupture_client_nom: clientNom,
@@ -1455,6 +1530,7 @@
                 rupture_client_siret: clientSiret ? ('Siret ' + clientSiret) : '',
                 rupture_client_forme_capital: formeCapital,
                 rupture_cabinet_nom: cabinetNom,
+                rupture_confrere_nom: confrereNom,
                 rupture_cabinet_adresse: cabinetAdresse,
                 rupture_lieu_date: (ville ? (ville + ', le ') : 'Le ') + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 rupture_civilite: document.getElementById('ruptureCivilite').value,
@@ -1478,7 +1554,7 @@
             
             data.nom_client = document.getElementById('nomDossier' + suffix).value;
             data.date_creation = document.getElementById('dateCreation' + suffix).value;
-            data.adresse = document.getElementById('adresse' + suffix).value;
+            data.adresse = lireAdresseClient(suffix);
             data.activite = document.getElementById('activitePrecise' + suffix).value;
             data.date_debut = document.getElementById('dateDebutMission' + suffix).value;
             data.date_fin = document.getElementById('dateFinExercice' + suffix).value;
