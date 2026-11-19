@@ -2161,21 +2161,20 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
 
             document.body.innerHTML = html;
 
-            // Tâches non facturées : la colonne « Cabinet » passe à « Néant »
-            // (social sans honoraires, secrétariat juridique sans PV d'AG, registres non tenus)
+            // Missions non facturées (social sans honoraires, juridique sans PV d'AG ni registres) :
+            // le client « Exécute » et le cabinet est à « Néant » sur toutes les lignes de la mission
             const montantNul = cle => !(parseFloat(String(store.getItem(cle) || '0').replace(/\s/g, '').replace(',', '.')) > 0);
-            const neantCabinet = (titre, filtreTache) => {
+            const horsMission = titre => {
                 const section = Array.from(document.querySelectorAll('.mission-section'))
                     .find(s => (s.querySelector('.mission-title') || {}).textContent.trim() === titre);
                 if (!section) return;
                 section.querySelectorAll('tbody tr').forEach(tr => {
                     const cellules = tr.querySelectorAll('td');
-                    if (cellules.length >= 3 && (!filtreTache || filtreTache(cellules[0].textContent.trim()))) cellules[2].textContent = 'Néant';
+                    if (cellules.length >= 3) { cellules[1].textContent = 'Exécute'; cellules[2].textContent = 'Néant'; }
                 });
             };
-            if (montantNul('honorairesSociale')) neantCabinet('Mission Sociale');
-            if (montantNul('pvAgo')) neantCabinet('Mission Juridique', tache => tache !== 'Tenue registres dématérialisés');
-            if (montantNul('registresLegaux')) neantCabinet('Mission Juridique', tache => tache === 'Tenue registres dématérialisés');
+            if (montantNul('honorairesSociale')) horsMission('Mission Sociale');
+            if (montantNul('pvAgo') && montantNul('registresLegaux')) horsMission('Mission Juridique');
 
             // Masque les lignes d'identification restées vides (ex: société pas encore créée)
             document.querySelectorAll('.description-item').forEach(item => {
