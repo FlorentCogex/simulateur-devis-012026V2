@@ -2104,6 +2104,22 @@ En cas de manquement du client à l’une de ses obligations (exemple : défaut 
 
             document.body.innerHTML = html;
 
+            // Tâches non facturées : la colonne « Cabinet » passe à « Néant »
+            // (social sans honoraires, secrétariat juridique sans PV d'AG, registres non tenus)
+            const montantNul = cle => !(parseFloat(String(store.getItem(cle) || '0').replace(/\s/g, '').replace(',', '.')) > 0);
+            const neantCabinet = (titre, filtreTache) => {
+                const section = Array.from(document.querySelectorAll('.mission-section'))
+                    .find(s => (s.querySelector('.mission-title') || {}).textContent.trim() === titre);
+                if (!section) return;
+                section.querySelectorAll('tbody tr').forEach(tr => {
+                    const cellules = tr.querySelectorAll('td');
+                    if (cellules.length >= 3 && (!filtreTache || filtreTache(cellules[0].textContent.trim()))) cellules[2].textContent = 'Néant';
+                });
+            };
+            if (montantNul('honorairesSociale')) neantCabinet('Mission Sociale');
+            if (montantNul('pvAgo')) neantCabinet('Mission Juridique', tache => tache !== 'Tenue registres dématérialisés');
+            if (montantNul('registresLegaux')) neantCabinet('Mission Juridique', tache => tache === 'Tenue registres dématérialisés');
+
             // Masque les lignes d'identification restées vides (ex: activité pas encore créée)
             document.querySelectorAll('.description-item').forEach(item => {
                 const val = item.querySelector('.description-value');
